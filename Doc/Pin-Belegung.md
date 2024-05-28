@@ -9,12 +9,12 @@
 
 ## In
 - ADC Port 2 = Luftdruck
-- ADC Port 3 = ??
-- ADC Port 6 =  Farbsensor
-- ADC Port 7
-- ADC Port 12
-- ADC Port 13 = Lichtschranke
-- ADC Port 14
-- ADC Port 15
+- ADC Port 3 = Positionserkennung (Digital)
+- ADC Port 6 = Farbsensor
+- ADC Port 7 = Ausgangspositionssensor (Digital)
+- ADC Port 12 = N/A
+- ADC Port 13 = Lichtschranke (Digital)
+- ADC Port 14 = N/A
+- ADC Port 15 = N/A
 
 
