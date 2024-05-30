@@ -1,11 +1,13 @@
 #include "ColorSensor.h"
 
-ColorSensor::ColorSensor()
-{
-    //ctor
+int ColorSensor::getValue(){
+	return adc.get(2); //Pin 2 = ColorSensor, gives raw value
 }
 
-ColorSensor::~ColorSensor()
-{
-    //dtor
+Color ColorSensor::getColor(){
+	// Something
+	Color c;
+	return c;
 }
+
+

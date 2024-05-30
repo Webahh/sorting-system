@@ -1,24 +1,26 @@
 #ifndef COLORSENSOR_H
 #define COLORSENSOR_H
-#include "Analog.h"
+#include "EmbSysLib.h"
+#include "AnalogPart.h"
+#include <string>
 
 struct Color{
-	// Magic will happen here
+	int red;
+	int green;
+	int blue;
+	std::string descr;
+
 };
 
-class ColorSensor : public Analog{
+class ColorSensor : public AnalogPart{
 
     public:
-        ColorSensor();
-        virtual ~ColorSensor();
+        ColorSensor(EmbSysLib::Hw::Adc_Mcu& adc): AnalogPart(adc){
 
-        int Analog::getValue(){
-        	return 0;
         }
 
-        int getColor(): Color(){
-        	return Color
-        }
+        int getValue() override;
+        Color getColor();
 
     protected:
 
