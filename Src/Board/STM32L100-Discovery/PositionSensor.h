@@ -8,7 +8,7 @@ class PositionSensor : DigitalPort
     public:
         bool getState()
         {
-            //Digital test (portB, 3, Digital::Out, 0);
+            //Digital test (portB, 3, Digital::Out, 0); //Port 3 Positionserkennung
         }
         
         float getPosition()

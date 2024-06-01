@@ -9,7 +9,7 @@ class EndSwitch : public DigitalPort
     public:
         bool getState()
         {
-            //Digital test (portB, 7, Digital::Out, 0);
+            //Digital test (portB, 7, Digital::Out, 0); //Port 7 Entposition Kran
         }
         
     protected:
