@@ -1,16 +1,17 @@
 #ifndef ENDSWITCH_H
 #define ENDSWITCH_H
 
-#include "Digital.h"
+#include "DigitalPort.h"
 
 
-class EndSwitch : public Digital
+class EndSwitch : public DigitalPort
 {
     public:
         bool getState()
         {
-            Digital test (portB, num, Digital::Out, 0);
+            //Digital test (portB, 7, Digital::Out, 0);
         }
+        
     protected:
 
     private:
