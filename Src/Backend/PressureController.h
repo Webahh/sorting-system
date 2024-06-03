@@ -1,20 +1,19 @@
 #pragma once
 
 #include "EmbSysLib.h"
-#include "Base/Part.h"
 
-namespace ss {
-    class PressureController : public Part {
+namespace so {
+    class PressureController {
     public:
         Motor(const EmbSysLib::Dev::Digital& portPressure)
             : m_portPressure(portPressure)
         {} 
 
-        virtual void enable();
-	    virtual void disable();
+        void enable();
+	    void disable();
 
         private:
-        DEmbSysLib::Dev::igital m_portPressure;
+            EmbSysLib::Dev::Digital m_portPressure;
     };
 }
 

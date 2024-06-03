@@ -1,6 +1,6 @@
 #include "PressureController.h" 
 
-namespace ss {
+namespace so {
 
     void PressureController::enable(){
         m_portPressure.set(true);

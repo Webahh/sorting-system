@@ -1,10 +1,6 @@
 #include "Motor.h" 
 
-namespace ss {
-
-    void Motor::enable() {}
-
-    void Motor::disable() {}
+namespace so {
 
     void Motor::turnLeft(){
         m_portTurnRight.set(false);
