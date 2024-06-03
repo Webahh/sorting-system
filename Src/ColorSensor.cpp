@@ -1,7 +1,7 @@
 #include "ColorSensor.h"
 
 int ColorSensor::getValue(){
-	return adc.get(2); //Pin 2 = ColorSensor, gives raw value
+	return adc.get(6); //Pin 6 = ColorSensor, gives raw value
 }
 
 Color ColorSensor::getColor(){

@@ -2,7 +2,7 @@
 
 
 int AirPressureSensor::getValue(){
-	return adc.get(6); //Pin 6 = AirPressureSensor, gives raw value
+	return adc.get(2); //Pin 2 = AirPressureSensor, gives raw value
 
 }
 
