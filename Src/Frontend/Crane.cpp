@@ -7,7 +7,7 @@ namespace so {
     }
 
     void Crane::turnRight(){
-        m_motor.turnLeft();
+        m_motor.turnRight();
     }
 
     void Crane::halt(){
@@ -17,19 +17,15 @@ namespace so {
     void Crane::updatePosition(){
         if(m_endswitch.getState()){
             m_positionSensor.reset();
-            return;
         }
-
-       if(m_motor.getDirection() == MotorDirection::LEFT_TURN){
+        else if(m_motor.getDirection() == MotorDirection::LEFT_TURN){
             m_positionSensor.updateLeft();
-            return;
        } else if(m_motor.getDirection() == MotorDirection::RIGHT_TURN){
             m_positionSensor.updateRight();
-            return;
        }
     }
 
-    void Crane::getPosition(){
+    int Crane::getPosition() const{
         return m_positionSensor.getPosition();
     }
 

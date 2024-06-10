@@ -1,13 +1,21 @@
 #pragma once
 
-#include "Backend/Motor"
-#include "Backend/PositionSensor"
-#include "Backend/DigitalPart"
-#include "Backend/AirVent"
+#include "Backend/Motor.h"
+#include "Backend/PositionSensor.h"
+#include "Backend/DigitalPart.h"
+#include "Backend/AirVent.h"
 
 namespace so {
     class Crane {
     public:
+
+    	Crane(const Motor& motor, const PositionSensor& positionSensor, const DigitalPart& endswitch, const AirVent& arm, const AirVent& pad)
+    		: m_motor(motor)
+    		, m_positionSensor(positionSensor)
+    		, m_endswitch(endswitch)
+    		, m_arm(arm)
+    		, m_pad(pad)
+    	{}
 
         void turnLeft();
         void turnRight();
@@ -15,7 +23,7 @@ namespace so {
 
         void updatePosition();
         void resetPosition();
-        void getPosition();
+        int getPosition() const;
 
         void raiseArm();
         void lowerArm();
@@ -23,11 +31,10 @@ namespace so {
         void enablePad();
         void disablePad();
 
-    private:
         Motor m_motor;
         PositionSensor m_positionSensor;
-        DigitatPart m_endswitch;
+        DigitalPart m_endswitch;
         AirVent m_arm;
         AirVent m_pad;
-    }
+    };
 }

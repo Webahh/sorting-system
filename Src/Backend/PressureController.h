@@ -5,7 +5,7 @@
 namespace so {
     class PressureController {
     public:
-        PressureController(const EmbSysLib::Dev::Digital& portPressure)
+        PressureController(EmbSysLib::Dev::Digital& portPressure)
             : m_portPressure(portPressure)
         {} 
 
@@ -13,7 +13,7 @@ namespace so {
 	    void disable();
 
         private:
-            EmbSysLib::Dev::Digital m_portPressure;
+            EmbSysLib::Dev::Digital& m_portPressure;
     };
 }
 

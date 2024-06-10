@@ -8,17 +8,21 @@ namespace so {
     {
         public:
 
+    		PositionSensor(EmbSysLib::Dev::Digital& digitalPort)
+    		: DigitalPart(digitalPort)
+    		, m_position(0)
+    		{}
+
             void updateLeft();
             void updateRight();
             void reset();
-            int getPosition();
+            int getPosition() const;
 
         protected:
 
         private:
 
-            int m_position = 0; 
-            bool m_lastState = false;
+            int m_position;
     };
 
 }

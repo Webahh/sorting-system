@@ -5,10 +5,10 @@
 namespace so {
 
     enum MotorDirection{
-        LEFT_TURN,
-        RIGHT_TURN,
-        HALT,
-    }
+        LEFT_TURN = 0,
+        RIGHT_TURN = 1,
+        HALT = 2,
+    };
 
     class Motor {
     public:
@@ -22,7 +22,7 @@ namespace so {
         void turnRight();
         void halt();
 
-        MotorDirection getDirection();
+        MotorDirection getDirection()const;
 
     private:
         EmbSysLib::Dev::Digital& m_portTurnLeft;

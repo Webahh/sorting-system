@@ -17,7 +17,7 @@ namespace so {
 		}
 
 
-		virtual int getValue();
+		virtual int getValue() const;
 
 	private:
 		EmbSysLib::Hw::Adc_Mcu& m_adc;
