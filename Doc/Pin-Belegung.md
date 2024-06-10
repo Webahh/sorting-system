@@ -16,5 +16,3 @@
 - ADC Port 13 = Lichtschranke (Digital) (leer < 250, Stein vorhanden > 3500)[Analog]
 - ADC Port 14 = N/A
 - ADC Port 15 = N/A
-
-

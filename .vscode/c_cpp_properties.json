@@ -5,7 +5,8 @@
             "includePath": [
                 "${workspaceFolder}/**",
                 "C:/Users/marvi/OneDrive/Laptop/Programmieren/Uni(Rest)/Embedded_C++/EmbSysLib-01.04.00/**",
-                "C:/Users/marvi/Git/sorting-system/**"
+                "C:/Users/marvi/Git/sorting-system/**",
+                "C:/Users/marvi/OneDrive/Laptop/Programmieren/Uni(Rest)/Embedded_C++/EmbSysLib-01.04.00/Src/**"
             ],
             "defines": [
                 "_DEBUG",

@@ -144,5 +144,3 @@ int main(void)
     disp.refresh();
   }
 }
-//EOF
-
