@@ -1,64 +1,22 @@
 //*******************************************************************
 #include "EmbSysLib.h"
-#include "Module/Rtos/Rtos.h"
-#include "ReportHandler.h"
-#include "config.h"
 
+#include "Backend/Motor.h"
 
-//*******************************************************************
-class myTimerTask : public TaskManager::Task
-{
-  public:
-    //---------------------------------------------------------------
-    myTimerTask( TaskManager &taskManager )
-    {
-      cnt = 0;
-      taskManager.add( this );
-    }
+using namespace EmbSysLib::Hw;
+using namespace EmbSysLib::Dev;
+using namespace EmbSysLib::Ctrl;
+using namespace EmbSysLib::Mod;
 
-    //---------------------------------------------------------------
-    virtual void update( void )
-    {
-      cnt++;
-    }
+Port_Mcu   portA( Port_Mcu::PA );
+Port_Mcu   portB( Port_Mcu::PB );
+Port_Mcu   portC( Port_Mcu::PC );
+Port_Mcu   portD( Port_Mcu::PD );
 
+Digital  enable( portD, 2, Digital::Out, 1 );
 
-
-    //---------------------------------------------------------------
-    DWORD cnt;
-};
-
-//*******************************************************************
-class myRtosTask : public Rtos::Task
-{
-  public:
-    //---------------------------------------------------------------
-    myRtosTask( Rtos &rtos )
-    : Rtos::Task( rtos, 500/* stack size*/ )
-    {
-      cnt = 0;
-    }
-
-  private:
-    //---------------------------------------------------------------
-    virtual void update( void )
-    {
-      while(1)
-      {
-        cnt++;
-        pause();  // pause the task until next time slot
-      }
-    }
-
-  public:
-    //---------------------------------------------------------------
-    DWORD cnt;
-
-}; //class myTask
-
-//*******************************************************************
-Rtos    rtos (    2,   // max num of tasks
-               1000 ); // time slice in us
+Digital motorLeft(portB, 1, Digital::Out, 0);
+Digital motorRight(portB, 0, Digital::Out, 0);
 
 //*******************************************************************
 int main(void)
@@ -144,3 +102,5 @@ int main(void)
     disp.refresh();
   }
 }
+//EOF
+
