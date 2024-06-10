@@ -5,7 +5,7 @@
 namespace so {
     class PressureController {
     public:
-        Motor(const EmbSysLib::Dev::Digital& portPressure)
+        PressureController(const EmbSysLib::Dev::Digital& portPressure)
             : m_portPressure(portPressure)
         {} 
 

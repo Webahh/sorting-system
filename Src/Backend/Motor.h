@@ -3,6 +3,13 @@
 #include "EmbSysLib.h"
 
 namespace so {
+
+    enum MotorDirection{
+        LEFT_TURN,
+        RIGHT_TURN,
+        HALT,
+    }
+
     class Motor {
     public:
 
@@ -14,6 +21,8 @@ namespace so {
         void turnLeft();
         void turnRight();
         void halt();
+
+        MotorDirection getDirection();
 
     private:
         EmbSysLib::Dev::Digital& m_portTurnLeft;

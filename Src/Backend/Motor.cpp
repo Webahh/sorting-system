@@ -16,4 +16,14 @@ namespace so {
         m_portTurnLeft.set(false);
         m_portTurnLeft.set(false);
     }
+
+    MotorDirection Motor::getDirection(){
+        if(m_portTurnLeft.get()){
+            return MotorDirection::LEFT_TURN;
+        } else if(m_portTurnRight.get()){
+            return MotorDirection::RIGHT_TURN;
+        } else {
+            return MotorDirection::HALT;
+        }
+    }
 }
