@@ -1,14 +1,14 @@
 #include "AirPressureSensor.h"
 
 namespace so {
-	float getPressure(){
+	float AirPressureSensor::getPressure(){
 		// conversion to bar
-		int raw = AnalogPart::getValue();
+		int raw = getValue();
 
 		return raw;
 	}
 
-	bool pressue(){
+	bool AirPressureSensor::pressure(){
 		return true;
 	}
 

@@ -3,8 +3,7 @@
 namespace so {
             void PositionSensor::updateLeft()
             {
-                if(getState() != m_lastState) {
-                    m_lastState = getState();
+                if(getEvent()) {
                     m_position--;
 
                 }
@@ -12,10 +11,8 @@ namespace so {
 
             void PositionSensor::updateRight()
             {
-                if(getState() != m_lastState) {
-                    m_lastState = getState();
+                if(getEvent()) {
                     m_position++;
-
                 }
             }
 
@@ -23,7 +20,7 @@ namespace so {
                 m_position = 0;
             }
 
-            int PositionSensor::getPosition(){
+            int PositionSensor::getPosition() const{
                 return m_position;
             }
 }
