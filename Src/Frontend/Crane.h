@@ -31,6 +31,12 @@ namespace so {
         void enablePad();
         void disablePad();
 
+        const Motor& getMotor() const;
+        const DigitalPart& getEndswitch() const;
+        const AirVent& getArmVent() const;
+        const AirVent& getPadVent() const;
+
+private:
         Motor m_motor;
         PositionSensor m_positionSensor;
         DigitalPart m_endswitch;

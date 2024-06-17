@@ -17,6 +17,12 @@ namespace so {
 
         SOState state = m_stateList.front();
         m_stateList.pop_front();
+
+        SOState newState = state();
+
+        if(!newState.isValid())
+            return;
+
         m_stateList.push_front(state());
     }
 }

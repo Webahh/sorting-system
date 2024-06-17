@@ -51,6 +51,7 @@ ScreenChar            disp         ( dispHw );
 
 //OUT
 Digital enable( portD, 2, Digital::Out, 1 );
+Digital pressureControllerPort(portB, 5, Digital::Out, 0);
 Digital motorLeftPort(portB, 1, Digital::Out, 0);
 Digital motorRightPort(portB, 0, Digital::Out, 0);
 Digital armVentPort(portB, 6, Digital::Out, 0);
@@ -64,17 +65,6 @@ Digital lbPort(portC, 3, Digital::InPU, 1);
 Digital rotA(portA, 8, Digital::InPU, 0);
 Digital rotB(portA, 1, Digital::InPU, 0);
 Digital rotCtrl(portA, 15, Digital::InPU, 0);
-
-PressureController pressureController(4);
-
-//CRANE
-Crane crane(
-		Motor(motorLeftPort, motorRightPort),
-		PositionSensor(positionSensorPort),
-		DigitalPart(endswitchPort),
-		AirVent(armVentPort),
-		AirVent(padVentPort)
-);
 
 //Manipulator&Buttons
 DigitalEncoderRotaryknob enc(&rotA, &rotB, &rotCtrl, taskManager);

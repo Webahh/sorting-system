@@ -45,4 +45,17 @@ namespace so {
         m_pad.close();
     }
 
+    const Motor& Crane::getMotor() const{
+        return m_motor;
+    }
+    const DigitalPart& Crane::getEndswitch() const{
+        return m_endswitch;
+    }
+    const AirVent& Crane::getArmVent() const{
+        return m_arm;
+    }
+    const AirVent& Crane::getPadVent() const{
+        return m_pad;
+    }
+
 }
