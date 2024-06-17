@@ -3,7 +3,8 @@
 
 #include "Frontend/Crane.h"
 #include "Hardware/Peripheral/Display/DisplayChar_DIP204spi.cpp"
-
+#include "Src/Backend/PressureController.h"
+#include "Module/Rtos/Rtos.h"
 
 #include <string>
 
@@ -22,16 +23,22 @@ Port_Mcu   portD( Port_Mcu::PD );
 
 Digital  enable( portD, 2, Digital::Out, 1 );
 
+Digital pressureControllerPort(portB, 5, Digital::Out, 0); //
+
 Digital motorLeftPort(portB, 1, Digital::Out, 0);
 Digital motorRightPort(portB, 0, Digital::Out, 0);
 
 Digital positionSensorPort(portC, 2, Digital::InPU, 0);
 Digital endswitchPort(portA, 7, Digital::InPU, 1);
-Digital lbPort(portC, 3, Digital::InPU, 1);
+Digital lbPort(portC, 3, Digital::InPU, 0); //
 
+Digital buttonS2(portC, 1, Digital::In, 0); //
+Digital buttonS3(portC, 6, Digital::In, 0); //
 
 Digital armVentPort(portB, 6, Digital::Out, 0);
 Digital padVentPort(portB, 9, Digital::Out, 0);
+
+PressureController pressureController(pressureControllerPort); //
 
 Crane crane(
 		Motor(motorLeftPort, motorRightPort),
@@ -89,11 +96,118 @@ DisplayChar_DIP204spi dispHw       ( spiDevDisplay );
 ScreenChar            disp         ( dispHw );
 
 
-//***********t********************************************************
+class myRtosTask : public Rtos::Task
+{
+  public:
+    //---------------------------------------------------------------
+    myRtosTask( Rtos &rtos )
+    : Rtos::Task( rtos, 5000/* stack size*/ )
+    {
+		stateCrane = false;
+		statePad = false;
+		a = false;
+    }
+
+  private:
+    //---------------------------------------------------------------
+    virtual void update( void )
+    {
+      while(1)
+      {
+		if(!a){
+			if(stateCrane){
+				crane.raiseArm();
+				stateCrane = false;
+				pause();
+			}else{
+				crane.lowerArm();
+				stateCrane = true;
+
+				pause();
+			}
+			a = true;
+		}else{
+			if(!statePad){
+				crane.enablePad();
+				statePad = true;
+				pause();
+			}else{
+				crane.disablePad();
+				statePad = false;
+				pause();
+			}
+			a = false;
+		}
+	  }
+	}
+
+	bool stateCrane;
+	bool statePad;
+	bool a;
+}; //class myRtosTask
+
+//*******************************************************************
+Rtos    rtos (    2,   // max num of tasks
+               10 ); // time slice in us
+
+//*******************************************************************
 int main(void)
 {
+
+	while(endswitchPort.get() != 1){
+		bool move = false;
+		if(!move){
+			crane.turnLeft();
+			move = true;
+		}
+	}
+
+	pressureController.enable();
+
+	myRtosTask  rtosTask ( rtos );
+
 	while(1){
+
+		// Abbruchbedingung: es gibt keinen Stein mehr
+		if(lbPort.get() != 1){
+			pressureController.disable();
+			exit(0);
+		}
+
 		crane.updatePosition();
+
+		if(buttonS2.getEvent()){
+			rtosTask.start();
+		}
+
+		
+
+		//check for endposition
+//		if(false && endswitchPort.get() == 1){
+//			crane.halt();
+//		}
+//
+//		// zum testen von den relevanten positionen
+//		if(crane.getPosition() == 8){
+//			crane.halt();
+//		}
+//
+//		if(crane.getPosition() == 10){
+//			crane.halt();
+//		}
+//
+//		if(crane.getPosition() ==12){
+//			crane.halt();
+//		}
+//
+//		if(crane.getPosition() == 14){
+//			crane.halt();
+//		}
+
+		// Abbruchbedingung: der Kran soll nicht überdreht
+		if(crane.getPosition() >= 16){
+			crane.halt();
+		}
 
 		switch(enc.getEvent()){
 			case DigitalEncoder::LEFT:
@@ -116,6 +230,7 @@ int main(void)
 		disp.refresh();
 	};
 
-	return 0;}
+	return 0;
+}
 
 
