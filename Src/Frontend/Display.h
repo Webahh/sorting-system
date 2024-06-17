@@ -2,8 +2,8 @@
 #include "MenuEntry.h"
 
 class Display{
-	// Hier noch Singleton einbauen?!
 	
+
 	public:
 		Display(const EmbSysLib::Dev::ScreenChar& sc)
 		: m_sc(sc)

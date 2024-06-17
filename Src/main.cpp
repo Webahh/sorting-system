@@ -1,14 +1,6 @@
 //*******************************************************************
 #include "config.h"
 
-using namespace EmbSysLib::Hw;
-using namespace EmbSysLib::Dev;
-using namespace EmbSysLib::Ctrl;
-using namespace EmbSysLib::Mod;
-using namespace so;
-
-
-
 //***********t********************************************************
 int main(void)
 {
