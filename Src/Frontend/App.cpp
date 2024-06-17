@@ -1,11 +1,11 @@
 #include "App.h"
 #include "SOControllerBase.h"
-#include "Src/config.h"
-#include "PressureController.h"
-#include "Crane.h"
+#include "config.h"
+#include "Backend/PressureController.h"
+#include "Frontend/Crane.h"
 
 namespace so {
-    void init(){
+    void App::init(){
         m_soController = new SOController();
         m_pressureController = new PressureController(pressureControllerPort);
         m_crane = new Crane(
@@ -18,7 +18,7 @@ namespace so {
         m_pressureController->enable();
     }
 
-    void update(){
+    void App::update(){
         if(!isValid())
             return;
 
@@ -26,7 +26,7 @@ namespace so {
         m_soController->update();
     }
 
-    void terminate(){
+    void App::terminate(){
         if(m_pressureController){
             m_pressureController->enable();
         }
@@ -41,19 +41,19 @@ namespace so {
         delete m_crane;
     }
 
-    bool isValid() const {
+    bool App::isValid() const {
         return m_soController && m_pressureController && m_crane;
     }
 
-    SOController* getSOController const(){
+    SOController* App::getSOController() const{
         return m_soController;
     }
 
-    PressureController* getPressureController const(){
+    PressureController* App::getPressureController() const{
         return m_pressureController;
     }
 
-    SOController* getCrane const(){
-        return m_soController;
+    Crane* App::getCrane() const{
+        return m_crane;
     }
 }

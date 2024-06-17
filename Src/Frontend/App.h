@@ -27,8 +27,8 @@ namespace so {
 
         bool isValid() const;
 
-        Crane* getSOController() const;
-        Crane* getPressureController() const;
+        SOController* getSOController() const;
+        PressureController* getPressureController() const;
         Crane* getCrane() const;
 
     private:

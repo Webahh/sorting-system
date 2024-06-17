@@ -1,11 +1,18 @@
 //*******************************************************************
-#include "config.h"
+#include "Frontend/App.h"
+#include "Frontend/AutoStates.h"
 
+using namespace so;
 //***********t********************************************************
 int main(void)
 {
+
+	App::get().init();
+	App::get().getSOController()->run(SOState(stateMoveToLoader));
+
 	while(1){
-		crane.updatePosition();
+		App::get().update();
+		/*crane.updatePosition();
 
 		switch(enc.getEvent()){
 			case DigitalEncoder::LEFT:
@@ -25,9 +32,10 @@ int main(void)
 		disp.printf(2, 0, "lb State: %d", lbPort.get());
 		disp.printf(3, 0, "Pos: %3d", crane.getPosition());
 
-		disp.refresh();
+		disp.refresh();*/
 	};
 
+	App::get().terminate();
 	return 0;}
 
 

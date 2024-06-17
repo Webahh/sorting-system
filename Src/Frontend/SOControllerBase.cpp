@@ -20,7 +20,7 @@ namespace so {
 
         SOState newState = state();
 
-        if(!newState.isValid())
+        if(!newState)
             return;
 
         m_stateList.push_front(state());
