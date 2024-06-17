@@ -2,7 +2,7 @@
 
 class MenuText : public MenuEntry {
 public:
-MenuText(const std::string& text) : text(text)
+MenuText(const std::string& text) : m_text(text)
 {}
 
 void update() override;

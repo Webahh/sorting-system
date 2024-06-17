@@ -1,10 +1,11 @@
 #include "EmbSysLib.h"
+#include "MenuEntry.h"
 
 class Display{
 	// Hier noch Singleton einbauen?!
 	
 	public:
-		Display(const ScreenChar& sc)
+		Display(const EmbSysLib::Dev::ScreenChar& sc)
 		: m_sc(sc)
 		{}
 	
@@ -18,7 +19,7 @@ class Display{
 	
 	
 	private:
-		ScreenChar m_sc;
+		EmbSysLib::Dev::ScreenChar m_sc;
 		std::vector<std::shared_ptr<MenuEntry>> m_menuEntries;
 		int m_focusedIndex = 0;
 	

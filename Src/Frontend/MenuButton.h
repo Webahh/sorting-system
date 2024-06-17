@@ -9,7 +9,7 @@ public:
 	void draw() override;
 	void select() override;
 	void focus(bool hasFocus) override;
-	void onClick() override:
+	void onClick();
 
 	bool addChildMenu(std::shared_ptr<MenuEntry>) override;
 	bool removeChildMenu(std::shared_ptr<MenuEntry>) override;

@@ -1,6 +1,7 @@
 #include "Display.h"
 
 
+
 void Display::update(){
 	// checks encodermovement!!
 	// Turn and press
@@ -13,7 +14,7 @@ void Display::render(){
 }
 
 bool Display::addChildMenu(std::shared_ptr<MenuEntry> menuEntry){
-	menuEntries.push_back(menuEntry);
+	m_menuEntries.push_back(menuEntry);
 	return true;
 
 }
