@@ -95,121 +95,21 @@ SPImaster::Device     spiDevDisplay( spi, portB, 12 );
 DisplayChar_DIP204spi dispHw       ( spiDevDisplay );
 ScreenChar            disp         ( dispHw );
 
-
-class myRtosTask : public Rtos::Task
+class Timer : public TaskManager::Task
 {
   public:
-    //---------------------------------------------------------------
-    myRtosTask( Rtos &rtos )
-    : Rtos::Task( rtos, 5000/* stack size*/ )
+    Timer( TaskManager &taskManager )
     {
-		stateCrane = false;
-		statePad = false;
-		a = false;
+      cnt = 0;
+      taskManager.add( this );
     }
-
-  private:
-    //---------------------------------------------------------------
-    virtual void update( void )
+	
+	virtual void update( void )
     {
-      while(1)
-      {
-		if(!a){
-			if(stateCrane){
-				crane.raiseArm();
-				stateCrane = false;
-				pause();
-			}else{
-				crane.lowerArm();
-				stateCrane = true;
+      cnt++;
+	  crane.updatePosition();
 
-				pause();
-			}
-			a = true;
-		}else{
-			if(!statePad){
-				crane.enablePad();
-				statePad = true;
-				pause();
-			}else{
-				crane.disablePad();
-				statePad = false;
-				pause();
-			}
-			a = false;
-		}
-	  }
-	}
-
-	bool stateCrane;
-	bool statePad;
-	bool a;
-}; //class myRtosTask
-
-//*******************************************************************
-Rtos    rtos (    2,   // max num of tasks
-               10 ); // time slice in us
-
-//*******************************************************************
-int main(void)
-{
-
-	while(endswitchPort.get() != 1){
-		bool move = false;
-		if(!move){
-			crane.turnLeft();
-			move = true;
-		}
-	}
-
-	pressureController.enable();
-
-	myRtosTask  rtosTask ( rtos );
-
-	while(1){
-
-		// Abbruchbedingung: es gibt keinen Stein mehr
-		if(lbPort.get() != 1){
-			pressureController.disable();
-			exit(0);
-		}
-
-		crane.updatePosition();
-
-		if(buttonS2.getEvent()){
-			rtosTask.start();
-		}
-
-		
-
-		//check for endposition
-//		if(false && endswitchPort.get() == 1){
-//			crane.halt();
-//		}
-//
-//		// zum testen von den relevanten positionen
-//		if(crane.getPosition() == 8){
-//			crane.halt();
-//		}
-//
-//		if(crane.getPosition() == 10){
-//			crane.halt();
-//		}
-//
-//		if(crane.getPosition() ==12){
-//			crane.halt();
-//		}
-//
-//		if(crane.getPosition() == 14){
-//			crane.halt();
-//		}
-
-		// Abbruchbedingung: der Kran soll nicht überdreht
-		if(crane.getPosition() >= 16){
-			crane.halt();
-		}
-
-		switch(enc.getEvent()){
+	  switch(enc.getEvent()){
 			case DigitalEncoder::LEFT:
 				crane.turnLeft();
 				break;
@@ -228,9 +128,117 @@ int main(void)
 		disp.printf(3, 0, "Pos: %3d", crane.getPosition());
 
 		disp.refresh();
-	};
+    }
+   
+	int cnt;
+};
 
-	return 0;
+void dooo(int *pos, Timer *time){
+	int t = *time.cnt;
+	switch(*pos)
+	{
+		case 0: // anheben des Steines
+			crane.lowerArm();
+			while(t + 100 < time.cnt){}
+			crane.enablePad();
+			while(t + 150 < time.cnt){}
+			crane.raiseArm();
+
+			(*pos)++;
+			break;
+		case 1: // farberkennung
+			crane.lowerArm();
+			while(t + 100 < time.cnt){}
+			Color c = ColorSensor.getColor();
+			while(t + 150 < time.cnt){}
+			crane.raiseArm();
+
+			// sortierung des Steins
+				switch(c)
+				{
+					case red:
+						crane.turnLeft();
+						while(crane.getPosition() < 10){}
+						crane.halt();
+						break;
+					case blue:
+						crane.turnLeft();
+						while(crane.getPosition() < 12){}
+						crane.halt();
+						break;
+					case white
+						crane.turnLeft();
+						while(crane.getPosition() < 14){}
+						crane.halt();
+						break;
+				}
+
+			*(pos) = 0;
+			break;
+		default:
+			break;
+	}
 }
 
+int main(void)
+{
 
+	while(endswitchPort.get() != 1){
+		bool move = false;
+		if(!move){
+			crane.turnLeft();
+			move = true;
+		}
+	}
+
+	pressureController.enable();
+	Timer timer(taskManager);
+	int pos = 0;
+
+	// Abbruchbedingung: es gibt keinen Stein mehr
+	if(lbPort.get() != 1){
+		pressureController.disable();
+		exit(0);
+	}
+
+	crane.turnLeft();
+	while(crane.getPosition() < 8){}
+	crane.halt();
+
+	dooo(&pos, &timer);
+
+	crane.turnLeft();
+	while(crane.getPosition() < 8){}
+	crane.halt();
+
+	dooo(&pos, &timer);
+
+	//check for endposition
+//	if(false && endswitchPort.get() == 1){
+//		crane.halt();
+//	}
+//
+//	// zum testen von den relevanten positionen
+//	if(crane.getPosition() == 8){
+//		crane.halt();
+//	}
+//
+//	if(crane.getPosition() == 10){
+//		crane.halt();
+//	}
+//
+//	if(crane.getPosition() ==12){
+//		crane.halt();
+//	}
+//
+//	if(crane.getPosition() == 14){
+//		crane.halt();
+//	}
+
+	// Abbruchbedingung: der Kran soll nicht überdreht
+	if(crane.getPosition() >= 16){
+		crane.halt();
+	}
+
+return 0;
+}

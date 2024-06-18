@@ -9,7 +9,7 @@ namespace so {
 
     struct Color{
         int red;
-        int green;
+        int white;
         int blue;
         std::string descr;
 
