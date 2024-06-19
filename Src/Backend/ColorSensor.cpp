@@ -7,10 +7,10 @@ namespace so {
 		Color c;
 		c.blue = c.red = c.white = 0;
 		int raw = AnalogPart::getValue();
-		if(raw < 33000){
+		if(raw < 33500){
 			c.white = 1;
 			c.descr = "white";
-		}else if(34000 < raw && raw < 35000){
+		}else if(33500 < raw && raw < 36000){
 			c.red = 1;
 			c.descr = "red";
 		}else{ //Problem, Standardvalue ist == blau

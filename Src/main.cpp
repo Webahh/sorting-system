@@ -140,49 +140,60 @@ class myTimer : public TaskManager::Task
 	int cnt;
 };
 
-void dooo(int *pos, myTimer *time){
-	int t = time->cnt;
+void delay(volatile unsigned int count) {
+    while(count--) {}
+}
+
+void dooo(int *pos){
 
 	switch(*pos)
 	{
 		case 0: // anheben des Steines
 		{
-			crane.lowerArm();
-			while(t + 100 < time->cnt){}
-			crane.enablePad();
-			while(t + 150 < time->cnt){}
-			crane.raiseArm();
+			crane.enablePad(); // lower arm
+			delay(2000000);
+			crane.raiseArm(); // enable pad
+			delay(2000000);
+			crane.disablePad(); // raise arm
+			delay(2000000);
+			//crane.lowerArm(); // disable pad
 
 			(*pos)++;
 			break;
 		}
 		case 1: // farberkennung
 		{
-			crane.lowerArm();
-			while(t + 100 < time->cnt){}
+			crane.enablePad();
+			delay(5000000);
 			so::Color c = colorSensor.getColor();
-			while(t + 150 < time->cnt){}
-			crane.raiseArm();
+			crane.disablePad();
+			delay(2000000);
 
 			// sortierung des Steins
 			if(c.white == 1){
-				crane.turnLeft();
-				while(crane.getPosition() < 10){}
+				crane.turnRight();
+				while(crane.getPosition() != 10){}
 				crane.halt();
 			}else if(c.red == 1){
-				crane.turnLeft();
-				while(crane.getPosition() < 12){}
+				crane.turnRight();
+				while(crane.getPosition() != 12){}
 				crane.halt();
 			}else if(c.blue == 1){
-				crane.turnLeft();
-				while(crane.getPosition() < 14){}
+				crane.turnRight();
+				while(crane.getPosition() != 14){}
 				crane.halt();
 			}else{
-				crane.turnLeft();
-				while(crane.getPosition() < 16){} //auswurf
+				crane.turnRight();
+				while(crane.getPosition() != 16){} //auswurf
 				crane.halt();
-				crane.disablePad();
 			}
+
+			crane.enablePad(); // lower arm
+			delay(2000000);
+			crane.lowerArm(); //disable pad
+			delay(500000);
+			crane.disablePad(); // raise arm
+			delay(2000000);
 
 			*(pos) = 0;
 			break;
@@ -197,40 +208,31 @@ void dooo(int *pos, myTimer *time){
 int main(void)
 {
 
-	while(endswitchPort.get() != 1){
-		bool move = false;
-		if(!move){
-			crane.turnLeft();
-			move = true;
-		}
-	}
 
 	pressureController.enable();
 	myTimer timer(taskManager);
 	int pos = 0;
 
 	// Abbruchbedingung: es gibt keinen Stein mehr
-	if(lbPort.get() != 1){
-		pressureController.disable();
-		exit(0);
+	while(lbPort.get() == 1){
+		while(endswitchPort.get() != 1){
+				bool move = false;
+				if(!move){
+					crane.turnLeft();
+					move = true;
+				}
+			}
+
+		dooo(&pos);
+
+		crane.turnRight();
+		while(crane.getPosition() != 8){}
+		crane.halt();
+
+		dooo(&pos);
 	}
 
-	crane.turnLeft();
-	while(crane.getPosition() < 8){}
-	crane.halt();
-
-	dooo(&pos, &timer);
-
-	crane.turnLeft();
-	while(crane.getPosition() < 8){}
-	crane.halt();
-
-	dooo(&pos, &timer);
-
-	//check for endposition
-//	if(false && endswitchPort.get() == 1){
-//		crane.halt();
-//	}
+	pressureController.disable();
 
 return 0;
 }
