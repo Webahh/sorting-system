@@ -5,7 +5,18 @@ namespace so {
 	Color ColorSensor::getColor(){
 		// Something
 		Color c;
+		c.blue = c.red = c.white = 0;
 		int raw = AnalogPart::getValue();
+		if(raw < 33000){
+			c.white = 1;
+			c.descr = "white";
+		}else if(34000 < raw && raw < 35000){
+			c.red = 1;
+			c.descr = "red";
+		}else{ //Problem, Standardvalue ist == blau
+			c.blue = 1;
+			c.descr = "blue";
+		}
 		return c;
 	}
 

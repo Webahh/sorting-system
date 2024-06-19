@@ -5,6 +5,7 @@
 #include "Hardware/Peripheral/Display/DisplayChar_DIP204spi.cpp"
 #include "Src/Backend/PressureController.h"
 #include "Module/Rtos/Rtos.h"
+#include "Src/Backend/ColorSensor.h"
 
 #include <string>
 
@@ -32,9 +33,6 @@ Digital positionSensorPort(portC, 2, Digital::InPU, 0);
 Digital endswitchPort(portA, 7, Digital::InPU, 1);
 Digital lbPort(portC, 3, Digital::InPU, 0); //
 
-Digital buttonS2(portC, 1, Digital::In, 0); //
-Digital buttonS3(portC, 6, Digital::In, 0); //
-
 Digital armVentPort(portB, 6, Digital::Out, 0);
 Digital padVentPort(portB, 9, Digital::Out, 0);
 
@@ -50,6 +48,10 @@ Crane crane(
 
 Timer_Mcu timer(Timer_Mcu::TIM_10, 10000L);
 TaskManager taskManager(timer);
+
+Adc_Mcu adc(timer); //
+ColorSensor colorSensor(adc, 6); //
+
 
 PinConfig::MAP PinConfig::table[] =
 {
@@ -95,10 +97,10 @@ SPImaster::Device     spiDevDisplay( spi, portB, 12 );
 DisplayChar_DIP204spi dispHw       ( spiDevDisplay );
 ScreenChar            disp         ( dispHw );
 
-class Timer : public TaskManager::Task
+class myTimer : public TaskManager::Task
 {
   public:
-    Timer( TaskManager &taskManager )
+    myTimer( TaskManager &taskManager )
     {
       cnt = 0;
       taskManager.add( this );
@@ -108,6 +110,11 @@ class Timer : public TaskManager::Task
     {
       cnt++;
 	  crane.updatePosition();
+
+	  // Abbruchbedingung: der Kran soll nicht überdreht
+	  if(crane.getPosition() >= 16){
+		  crane.halt();
+	  }
 
 	  switch(enc.getEvent()){
 			case DigitalEncoder::LEFT:
@@ -133,50 +140,57 @@ class Timer : public TaskManager::Task
 	int cnt;
 };
 
-void dooo(int *pos, Timer *time){
-	int t = *time.cnt;
+void dooo(int *pos, myTimer *time){
+	int t = time->cnt;
+
 	switch(*pos)
 	{
 		case 0: // anheben des Steines
+		{
 			crane.lowerArm();
-			while(t + 100 < time.cnt){}
+			while(t + 100 < time->cnt){}
 			crane.enablePad();
-			while(t + 150 < time.cnt){}
+			while(t + 150 < time->cnt){}
 			crane.raiseArm();
 
 			(*pos)++;
 			break;
+		}
 		case 1: // farberkennung
+		{
 			crane.lowerArm();
-			while(t + 100 < time.cnt){}
-			Color c = ColorSensor.getColor();
-			while(t + 150 < time.cnt){}
+			while(t + 100 < time->cnt){}
+			so::Color c = colorSensor.getColor();
+			while(t + 150 < time->cnt){}
 			crane.raiseArm();
 
 			// sortierung des Steins
-				switch(c)
-				{
-					case red:
-						crane.turnLeft();
-						while(crane.getPosition() < 10){}
-						crane.halt();
-						break;
-					case blue:
-						crane.turnLeft();
-						while(crane.getPosition() < 12){}
-						crane.halt();
-						break;
-					case white
-						crane.turnLeft();
-						while(crane.getPosition() < 14){}
-						crane.halt();
-						break;
-				}
+			if(c.white == 1){
+				crane.turnLeft();
+				while(crane.getPosition() < 10){}
+				crane.halt();
+			}else if(c.red == 1){
+				crane.turnLeft();
+				while(crane.getPosition() < 12){}
+				crane.halt();
+			}else if(c.blue == 1){
+				crane.turnLeft();
+				while(crane.getPosition() < 14){}
+				crane.halt();
+			}else{
+				crane.turnLeft();
+				while(crane.getPosition() < 16){} //auswurf
+				crane.halt();
+				crane.disablePad();
+			}
 
 			*(pos) = 0;
 			break;
+		}
 		default:
+		{
 			break;
+		}
 	}
 }
 
@@ -192,7 +206,7 @@ int main(void)
 	}
 
 	pressureController.enable();
-	Timer timer(taskManager);
+	myTimer timer(taskManager);
 	int pos = 0;
 
 	// Abbruchbedingung: es gibt keinen Stein mehr
@@ -217,28 +231,6 @@ int main(void)
 //	if(false && endswitchPort.get() == 1){
 //		crane.halt();
 //	}
-//
-//	// zum testen von den relevanten positionen
-//	if(crane.getPosition() == 8){
-//		crane.halt();
-//	}
-//
-//	if(crane.getPosition() == 10){
-//		crane.halt();
-//	}
-//
-//	if(crane.getPosition() ==12){
-//		crane.halt();
-//	}
-//
-//	if(crane.getPosition() == 14){
-//		crane.halt();
-//	}
-
-	// Abbruchbedingung: der Kran soll nicht überdreht
-	if(crane.getPosition() >= 16){
-		crane.halt();
-	}
 
 return 0;
 }

@@ -20,7 +20,6 @@ namespace so {
         public:
             ColorSensor(EmbSysLib::Hw::Adc_Mcu& adc, int port)
             : AnalogPart(adc, port){
-
             }
 
             Color getColor();
