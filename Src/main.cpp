@@ -4,10 +4,7 @@
 #include "Frontend/Crane.h"
 #include "Hardware/Peripheral/Display/DisplayChar_DIP204spi.cpp"
 #include "Src/Backend/PressureController.h"
-#include "Module/Rtos/Rtos.h"
 #include "Src/Backend/ColorSensor.h"
-
-#include <string>
 
 using namespace EmbSysLib::Hw;
 using namespace EmbSysLib::Dev;
@@ -68,20 +65,20 @@ PinConfig::MAP PinConfig::table[] =
   // ADC
   ADC12_IN0_PA0,
   ADC12_IN1_PA1,
-    ADC12_IN2_PA2,
-    ADC12_IN3_PA3,
-    ADC12_IN4_PA4,
-    ADC12_IN5_PA5,
-    ADC12_IN6_PA6,
-    ADC12_IN7_PA7,
-    ADC12_IN8_PB0,
-    ADC12_IN9_PB1,
-    ADC12_IN10_PC0,
-    ADC12_IN11_PC1,
-    ADC12_IN12_PC2,
-    ADC12_IN13_PC3,
-    ADC12_IN14_PC4,
-    ADC12_IN15_PC5,
+  ADC12_IN2_PA2,
+  ADC12_IN3_PA3,
+  ADC12_IN4_PA4,
+  ADC12_IN5_PA5,
+  ADC12_IN6_PA6,
+  ADC12_IN7_PA7,
+  ADC12_IN8_PB0,
+  ADC12_IN9_PB1,
+  ADC12_IN10_PC0,
+  ADC12_IN11_PC1,
+  ADC12_IN12_PC2,
+  ADC12_IN13_PC3,
+  ADC12_IN14_PC4,
+  ADC12_IN15_PC5,
 
   END_OF_TABLE
 };
