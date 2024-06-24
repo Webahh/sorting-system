@@ -11,10 +11,10 @@ namespace so {
     }
 
     void SOController::update() {
-        if(m_stateList.empty()){
+        if(m_stateList.empty() || SOTimer::get().getTime() - m_stateList.front().getStartTime() < 0){
            return;
         }
-
+        
         SOState state = m_stateList.front();
         m_stateList.pop_front();
 
@@ -24,5 +24,9 @@ namespace so {
             return;
 
         m_stateList.push_front(state());
+    }
+
+    void SOController::reset(){
+       m_stateList.clear(); 
     }
 }

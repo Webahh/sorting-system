@@ -1,6 +1,8 @@
-//*******************************************************************
 #include "Frontend/App.h"
+#include "Frontend/Timer.h"
 #include "Frontend/AutoStates.h"
+#include "config.h"
+
 
 using namespace so;
 //***********t********************************************************
@@ -8,6 +10,7 @@ int main(void)
 {
 
 	App::get().init();
+	SOTimer::get().init(time_taskManager);
 	App::get().getSOController()->run(SOState(stateMoveToLoader));
 
 	while(1){
@@ -36,6 +39,7 @@ int main(void)
 	};
 
 	App::get().terminate();
-	return 0;}
+	return 0;
+}
 
 

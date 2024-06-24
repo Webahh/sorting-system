@@ -1,8 +1,9 @@
 #include "App.h"
-#include "SOControllerBase.h"
 #include "config.h"
+#include "SOControllerBase.h"
 #include "Backend/PressureController.h"
 #include "Frontend/Crane.h"
+#include "Backend/ColorSensor.h"
 
 namespace so {
     void App::init(){
@@ -15,6 +16,9 @@ namespace so {
 		AirVent(armVentPort),
 		AirVent(padVentPort));
 
+        m_colorSensor = new ColorSensor(adc, colorSensorPort);
+        m_lightBarrier = new DigitalPart(lightBarrierPort);
+        
         m_pressureController->enable();
     }
 
@@ -39,6 +43,8 @@ namespace so {
 
         delete m_pressureController;
         delete m_crane;
+        delete m_colorSensor;
+        delete m_lightBarrier;
     }
 
     bool App::isValid() const {
@@ -55,5 +61,13 @@ namespace so {
 
     Crane* App::getCrane() const{
         return m_crane;
+    }
+
+    ColorSensor* App::getColorSensor() const {
+        return m_colorSensor;
+    }
+
+    DigitalPart* App::getLightBarrier() const {
+        return m_lightBarrier;
     }
 }
