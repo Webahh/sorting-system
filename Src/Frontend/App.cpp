@@ -1,9 +1,43 @@
 #include "App.h"
-#include "config.h"
+//#include "config.h"
 #include "SOControllerBase.h"
 #include "Backend/PressureController.h"
 #include "Frontend/Crane.h"
 #include "Backend/ColorSensor.h"
+#include "EmbSysLib.h"
+
+using namespace EmbSysLib::Hw;
+using namespace EmbSysLib::Dev;
+using namespace EmbSysLib::Ctrl;
+using namespace EmbSysLib::Mod;
+using namespace so;
+
+extern Port_Mcu   portA;
+extern Port_Mcu   portB;
+extern Port_Mcu   portC;
+extern Port_Mcu   portD;
+
+//OUT
+extern Digital enable;
+extern Digital pressureControllerPort;
+extern Digital motorLeftPort;
+extern Digital motorRightPort;
+extern Digital armVentPort;
+extern Digital padVentPort;
+
+//IN
+extern Digital positionSensorPort;
+extern Digital endswitchPort;
+extern Digital lightBarrierPort;
+
+extern Digital rotA;
+extern Digital rotB;
+extern Digital rotCtrl;
+
+//Analog
+extern  Adc_Mcu adc;
+const int colorSensorPort = 3;
+
 
 namespace so {
     void App::init(){

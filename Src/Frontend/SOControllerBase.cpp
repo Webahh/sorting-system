@@ -23,7 +23,7 @@ namespace so {
         if(!newState)
             return;
 
-        m_stateList.push_front(state());
+        m_stateList.push_front(newState);
     }
 
     void SOController::reset(){
