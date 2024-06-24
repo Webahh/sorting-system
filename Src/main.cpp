@@ -50,7 +50,7 @@ Timer_Mcu timer(Timer_Mcu::TIM_10, 10000L);
 TaskManager taskManager(timer);
 
 Adc_Mcu adc(timer); //
-ColorSensor colorSensor(adc, 6); //
+ColorSensor colorSensor(adc, 3); //
 
 
 PinConfig::MAP PinConfig::table[] =
@@ -129,7 +129,7 @@ class myTimer : public TaskManager::Task
 			default:
 				break;
 		}
-		disp.printf(0, 0, "endS State: %d", endswitchPort.get());
+		disp.printf(0, 0, "Color: %d", colorSensor.getValue());
 		disp.printf(1, 0, "Pos State: %d", positionSensorPort.get());
 		disp.printf(2, 0, "lb State: %d", lbPort.get());
 		disp.printf(3, 0, "Pos: %3d", crane.getPosition());
@@ -164,7 +164,7 @@ void dooo(int *pos){
 		case 1: // farberkennung
 		{
 			crane.enablePad();
-			delay(5000000);
+			delay(3000000);
 			so::Color c = colorSensor.getColor();
 			crane.disablePad();
 			delay(2000000);
@@ -226,7 +226,7 @@ int main(void)
 		dooo(&pos);
 
 		crane.turnRight();
-		while(crane.getPosition() != 8){}
+		while(crane.getPosition() != 7){}
 		crane.halt();
 
 		dooo(&pos);
