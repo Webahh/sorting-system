@@ -5,8 +5,9 @@
 #include "Backend/DigitalPart.h"
 
 namespace so {
+
     template<SOState::StateFunc startFunc, SOState::StateFunc exitFunc>
-    static SOState moveToPosition(int pos){
+    static SOState moveToPosition(int pos, u_int64_t delay = 0){
 
         App& app = App::get();
         Crane& crane = *app.getCrane();
@@ -14,7 +15,7 @@ namespace so {
 
         if(crane.getPosition() == pos){
             crane.halt();
-            return SOState(exitFunc);
+            return SOState(exitFunc, delay);
         } else if(crane.getPosition() < pos && motor.getDirection() != MotorDirection::RIGHT_TURN){
             crane.turnRight();
         } else if(crane.getPosition() > pos && motor.getDirection() != MotorDirection::LEFT_TURN) {
@@ -32,23 +33,23 @@ namespace so {
       con.run(SOState([](){
          App::get().getCrane()->lowerArm();
          return SOState(nullptr);
-      }, 1.0f));
+      }, 10));
 
       con.run(SOState([](){
          App::get().getCrane()->disablePad();
          return SOState(nullptr);
-      }, 4.0f));
+      }, 50));
 
       con.run(SOState([](){
          App::get().getCrane()->raiseArm();
          return SOState(stateMoveToLoader);
-      }, 8.0f));
+      }, 80));
       
       return nullptr; 
    }
 
    SOState stateMoveToDropperGarbage(){
-      static const int garbageDropperPosition = 16;
+      static const int garbageDropperPosition = 18;
       return moveToPosition<stateMoveToDropperGarbage, stateDropItem>(garbageDropperPosition);
    }
 
@@ -70,27 +71,40 @@ namespace so {
    SOState stateCheckColor(){
       App& app = App::get();
 
-      static const int colorWhite = 30000;
-      static const int colorRedLow = 40000, colorRedUp = 50000;
-      static const int colorBlue = 56000;
+      static const int colorWhite = 40000;
+      static const int colorRedLow = 40000, colorRedHigh = 50000;
+      static const int colorBlue = 50000;
 
       if(app.getColorSensor()->getValue() < colorWhite){
-         return SOState(stateMoveToDropperLeft);
+         return SOState([](){
+             App::get().getCrane()->raiseArm();
+             return SOState(stateMoveToDropperMiddle, 25);
+         });
       }
-      else if(app.getColorSensor()->getValue() > colorRedLow && app.getColorSensor()->getValue() < colorRedUp){
-         return SOState(stateMoveToDropperMiddle);
+      else if(app.getColorSensor()->getValue() > colorRedLow && app.getColorSensor()->getValue() < colorRedHigh){
+    	  return SOState([](){
+			   App::get().getCrane()->raiseArm();
+			   return SOState(stateMoveToDropperLeft, 25);
+		   });
       }
       else if(app.getColorSensor()->getValue() > colorBlue){
-         return SOState(stateMoveToDropperRight);
+    	  return SOState([](){
+			   App::get().getCrane()->raiseArm();
+			   return SOState(stateMoveToDropperRight, 25);
+		   });
       }
 
-      return SOState(stateCheckColor); 
+      return SOState(stateCheckColor);
+   }
+
+   SOState stateDrop(){
+	   App::get().getCrane()->lowerArm();
+	   return SOState(stateCheckColor, 25);
    }
 
    SOState stateMoveToColorSensor(){
-
       static const int colorSensorPosition = 7;
-      return moveToPosition<stateMoveToColorSensor, stateCheckColor>(colorSensorPosition);
+      return moveToPosition<stateMoveToColorSensor, stateDrop>(colorSensorPosition, 25);
    }
 
    SOState stateCollectItem() {
@@ -100,17 +114,17 @@ namespace so {
       con.run(SOState([](){
          App::get().getCrane()->lowerArm();
          return SOState(nullptr);
-      }, 1.0f));
+      }, 10));
 
       con.run(SOState([](){
          App::get().getCrane()->enablePad();
          return SOState(nullptr);
-      }, 4.0f));
+      }, 50));
 
       con.run(SOState([](){
          App::get().getCrane()->raiseArm();
-         return SOState(stateMoveToColorSensor);
-      }, 8.0f));
+         return SOState(stateMoveToColorSensor, 25);
+      }, 80));
       
       return nullptr;
    }

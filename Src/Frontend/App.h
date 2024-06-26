@@ -9,21 +9,24 @@ namespace so {
     class DigitalPart;
 
 
-    class App {
+    class App : public EmbSysLib::Dev::TaskManager::Task {
         public:
         static App& get()
         {
             static App instance; 
             return instance;
         }
-        App() {}
+
+        App()
+        {
+        }
 
     public:
         App(App const&)             = delete;
         void operator=(App const&)  = delete;
         
         void init();
-        void update();
+        virtual void update() override;
         void terminate();
 
         bool isValid() const;
@@ -35,6 +38,7 @@ namespace so {
         DigitalPart* getLightBarrier() const;
 
     private:
+
         SOController* m_soController;
         PressureController* m_pressureController;
         Crane* m_crane; 

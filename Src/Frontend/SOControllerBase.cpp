@@ -11,10 +11,17 @@ namespace so {
     }
 
     void SOController::update() {
-        if(m_stateList.empty() || SOTimer::get().getTime() - m_stateList.front().getStartTime() < 0){
+        if(m_stateList.empty()){
            return;
         }
         
+        const int64_t currentTime = SOClock::get().getTime();
+        const int64_t stateTime = m_stateList.front().getStartTime();
+
+        if(currentTime - stateTime < 0){
+        	return;
+        }
+
         SOState state = m_stateList.front();
         m_stateList.pop_front();
 

@@ -1,7 +1,6 @@
 #pragma once
 
-#include "Timer.h"
-
+#include <Frontend/Clock.h>
 #include <cstddef>
 #include <list>
 
@@ -14,12 +13,13 @@ namespace so{
 
         SOState(StateFunc func)
             : m_func(func)
+        	, m_startTime(SOClock::get().getTime())
         {
         }
         
         SOState(StateFunc func, float delay)
             : m_func(func)
-            , m_startTime(SOTimer::get().getTime() + delay)
+            , m_startTime(SOClock::get().getTime() + delay)
         {
         }
         
@@ -28,7 +28,7 @@ namespace so{
         {
         }
 
-        float getStartTime() const{
+        u_int64_t getStartTime() const{
             return m_startTime;
         }
 
@@ -42,7 +42,7 @@ namespace so{
 
     private:
         StateFunc m_func;
-        float m_startTime;
+        u_int64_t m_startTime;
     };
 
     class SOController {

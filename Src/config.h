@@ -3,6 +3,7 @@
 #include "EmbSysLib.h"
 #include "Frontend/Crane.h"
 #include "Backend/PressureController.h"
+#include "Hardware/Peripheral/Display/DisplayChar_DIP204spi.cpp"
 
 #include <string>
 
@@ -37,9 +38,6 @@ EmbSysLib::Hw::PinConfig::MAP EmbSysLib::Hw::PinConfig::table[] =
 Timer_Mcu app_timer(Timer_Mcu::TIM_10, 10000L);
 TaskManager app_taskManager(app_timer);
 
-Timer_Mcu time_timer(Timer_Mcu::TIM_10, 1000L);
-TaskManager time_taskManager(time_timer);
-
 //--------------------------------------------------------------------------------------//
 //PORTS
 Port_Mcu   portA( Port_Mcu::PA );
@@ -52,8 +50,8 @@ Digital enable( portD, 2, Digital::Out, 1 );
 Digital pressureControllerPort(portB, 5, Digital::Out, 0);
 Digital motorLeftPort(portB, 1, Digital::Out, 0);
 Digital motorRightPort(portB, 0, Digital::Out, 0);
-Digital armVentPort(portB, 6, Digital::Out, 0);
-Digital padVentPort(portB, 9, Digital::Out, 0);
+Digital armVentPort(portB, 9, Digital::Out, 0);
+Digital padVentPort(portB, 6, Digital::Out, 0);
 
 //IN
 Digital positionSensorPort(portC, 2, Digital::InPU, 0);
@@ -68,6 +66,13 @@ Digital rotCtrl(portA, 15, Digital::InPU, 0);
  Adc_Mcu adc(app_timer);
 const int colorSensorPort = 3;
 
+//-------------------------------------------------------------------
+// Display
+//-------------------------------------------------------------------
+SPImaster_Mcu         spi          ( SPImaster_Mcu::SPI_2, SPImaster_Mcu::CR_1000kHz, SPImaster_Mcu::CPOL_H_CPHA_H );
+SPImaster::Device     spiDevDisplay( spi, portB, 12 );
+DisplayChar_DIP204spi dispHw       ( spiDevDisplay );
+ScreenChar            disp         ( dispHw );
 
 
 
