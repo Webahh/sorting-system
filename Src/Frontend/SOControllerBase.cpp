@@ -16,9 +16,9 @@ namespace so {
         }
         
         const int64_t currentTime = SOClock::get().getTime();
-        const int64_t stateTime = m_stateList.front().getStartTime();
+        const int64_t execTime = m_stateList.front().getExecTime();
 
-        if(currentTime - stateTime < 0){
+        if(currentTime - execTime < 0){
         	return;
         }
 

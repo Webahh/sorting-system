@@ -3,33 +3,55 @@
 #include <Frontend/Clock.h>
 #include <cstddef>
 #include <list>
+#include <functional>
 
 namespace so{
 
     struct SOState{
-        typedef SOState(*StateFunc)();
 
         SOState() {}
 
-        SOState(StateFunc func)
+        template<typename F>
+        SOState(F func)
             : m_func(func)
         	, m_startTime(SOClock::get().getTime())
+			, m_delay(0)
         {
         }
         
-        SOState(StateFunc func, float delay)
-            : m_func(func)
-            , m_startTime(SOClock::get().getTime() + delay)
-        {
-        }
-        
+        template<typename F>
+		SOState(F func, u_int32_t delay)
+			: m_func(func)
+			, m_startTime(SOClock::get().getTime())
+			, m_delay(delay)
+		{
+		}
+
         SOState(std::nullptr_t)
             : m_func(nullptr)
+        	, m_startTime(SOClock::get().getTime())
+        			, m_delay(0)
         {
         }
 
         u_int64_t getStartTime() const{
             return m_startTime;
+        }
+
+        void resetStartTime() {
+        	m_startTime = SOClock::get().getTime();
+        }
+
+        u_int64_t getDelay() const{
+        	return m_startTime;
+        }
+
+        u_int64_t setDelay() const{
+			return m_startTime;
+		}
+
+        u_int64_t getExecTime() const {
+        	return m_startTime + m_delay;
         }
 
         SOState operator()() const{
@@ -41,9 +63,19 @@ namespace so{
         }
 
     private:
-        StateFunc m_func;
+        std::function<SOState()> m_func;
         u_int64_t m_startTime;
+        u_int32_t m_delay;
     };
+
+    template<typename F>
+	static SOState buildState(F&& func, SOState&& exitState, u_int32_t delay = 0){
+		return SOState([=]() mutable {
+			func();
+			exitState.resetStartTime();
+			return exitState;
+		}, delay);
+	}
 
     class SOController {
     public:
