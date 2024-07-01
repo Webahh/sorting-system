@@ -58,9 +58,10 @@ Digital positionSensorPort(portC, 2, Digital::InPU, 0);
 Digital endswitchPort(portA, 7, Digital::InPU, 1);
 Digital lightBarrierPort(portC, 3, Digital::InPU, 0);
 
-Digital rotA(portA, 8, Digital::InPU, 0);
-Digital rotB(portA, 1, Digital::InPU, 0);
-Digital rotCtrl(portA, 15, Digital::InPU, 0);
+Digital    rotA    ( portA, 8, Digital::InPU, 1 );
+Digital    rotB    ( portA, 1, Digital::InPU, 1 );
+Digital    rotCtrl ( portA,15, Digital::InPU, 1 );
+DigitalEncoderRotaryknob  encoderWheel( &rotA, &rotB, &rotCtrl, app_taskManager );
 
 //Analog
  Adc_Mcu adc(app_timer);

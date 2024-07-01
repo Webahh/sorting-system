@@ -1,30 +1,14 @@
 #include "Display.h"
 
+namespace so {
 
+	void Display::setup(){}
 
-void Display::update(){
-	// checks encodermovement!!
-	// Turn and press
+	u_int32_t Display::getSize() const{
+			return m_displaySize;
+	}
 
-}
-
-void Display::render(){
-	
-	
-}
-
-bool Display::addChildMenu(std::shared_ptr<MenuEntry> menuEntry){
-	m_menuEntries.push_back(menuEntry);
-	return true;
-
-}
-
-bool Display::removeChildMenu(std::shared_ptr<MenuEntry> menuEntry){
-	auto iter = std::find(m_menuEntries.begin(), m_menuEntries.end(), menuEntry);
-    if (iter != m_menuEntries.end()) {
-        m_menuEntries.erase(iter);
-        return true;
-    }
-    return false;
-	
+	void Display::setSize(u_int32_t size){
+		m_displaySize = size;
+	}
 }

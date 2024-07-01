@@ -1,24 +1,43 @@
+#pragma once
+
 #include "MenuEntry.h"
+#include <string>
 
-class MenuText : public MenuEntry {
-public:
-MenuText(const std::string& text) : m_text(text)
-{}
+namespace so {
+	class MenuText : public MenuEntry {
+	public:
 
-void update() override;
+	MenuText()
+		: m_text()
+	{
+	}
 
-void draw() override;
+	//void update() override{}
+	std::string draw() override;
+	virtual bool forwardEvent(const EventType& eventType) override;
 
-void select() override;
+	void setText(const std::string& text);
 
-void focus(bool hasFocus) override;
+	private:
+		std::string m_text;
+	};
 
-bool addChildMenu(std::shared_ptr<MenuEntry>) override;
+	template<>
+	class MenuBuilder<MenuText> : public  MenuBuilderBase<MenuText>{
+	public:
+		MenuBuilder<MenuText>& text(const std::string& text){
+			get().setText(text);
+			return *this;
+		}
 
-bool removeChildMenu(std::shared_ptr<MenuEntry>) override;
+		MenuBuilder<MenuText>& onUpdate(const std::function<void()>& onUpdateFunc){
+			get().setOnUpdate(onUpdateFunc);
+			return *this;
+		}
 
-private:
-	std::string m_text;
-	bool m_isFocused;
-
-};
+		MenuBuilder<MenuText>& onEvent(const EventType& eventType, const std::function<void()>& onUpdateFunc){
+			get().addMapping(eventType, onUpdateFunc);
+			return *this;
+		}
+	};
+}

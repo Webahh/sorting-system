@@ -1,5 +1,12 @@
 #pragma once
+#include "EventReceiver.h"
 #include "SOControllerBase.h"
+#include "Screen.h"
+#include "Display.h"
+#include "Menu.h"
+
+#include <memory>
+
 namespace so {
 
     class SOController;
@@ -8,8 +15,7 @@ namespace so {
     class ColorSensor;
     class DigitalPart;
 
-
-    class App : public EmbSysLib::Dev::TaskManager::Task {
+    class App : public EmbSysLib::Dev::TaskManager::Task, public EventReceiver {
         public:
         static App& get()
         {
@@ -19,15 +25,23 @@ namespace so {
 
         App()
         {
+        	setupMappings(
+        			{
+
+        			}
+        	);
         }
 
     public:
         App(App const&)             = delete;
         void operator=(App const&)  = delete;
         
-        void init();
+        virtual void init();
         virtual void update() override;
-        void terminate();
+        virtual bool forwardEvent(const EventType& eventType) override;
+        virtual void terminate();
+
+        void handleEvents();
 
         bool isValid() const;
 
@@ -36,13 +50,15 @@ namespace so {
         Crane* getCrane() const;
         ColorSensor* getColorSensor() const;
         DigitalPart* getLightBarrier() const;
+        Screen* getScreen() const;
+
 
     private:
-
         SOController* m_soController;
         PressureController* m_pressureController;
         Crane* m_crane; 
         ColorSensor* m_colorSensor;
         DigitalPart* m_lightBarrier;
+        Screen* m_screen;
     };
 }

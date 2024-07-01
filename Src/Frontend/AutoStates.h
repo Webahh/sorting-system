@@ -4,6 +4,7 @@
 #include <cstddef>
 
 namespace so {
+	namespace AutoStates {
 
    SOState stateDropItem();
    SOState stateMoveToDropperGarbage();
@@ -15,4 +16,5 @@ namespace so {
    SOState stateCollectItem();
    SOState stateCheckItemExists();
    SOState stateMoveToLoader();
+	}
 }
