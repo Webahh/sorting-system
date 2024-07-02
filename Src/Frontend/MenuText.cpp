@@ -1,31 +1,16 @@
 #include "MenuText.h"
 
-void MenuText::update(){
-	
-}
+namespace so {
 
-void MenuText::draw(){
-	if (m_isFocused) {
-        std::cout << "> " << m_text << std::endl;  // Hervorheben des Textes, wenn fokussiert
-    } else {
-        std::cout << "  " << m_text << std::endl; // Normale Darstellung
-    }
- 
-}
+	std::string MenuText::draw(){
+		return m_text;
+	}
 
-void MenuText::select(){
-	
-}
+	bool MenuText::forwardEvent(const EventType& eventType){
+		return false;
+	}
 
-void MenuText::focus(bool hasFocus){
-	m_isFocused = hasFocus;
-}
-	
-
-bool MenuText::addChildMenu(std::shared_ptr<MenuEntry>){
-	return false; // No Childs for Texts
-}
-
-bool MenuText::removeChildMenu(std::shared_ptr<MenuEntry>){
-	return false; // No Childs for Texts
+	void MenuText::setText(const std::string& text){
+		m_text = text;
+	}
 }

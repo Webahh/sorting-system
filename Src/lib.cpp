@@ -16,3 +16,5 @@ This file is used to avoid modifications in the IDE project file
 #include "Module/USB/USB_Uart.cpp"
 #include "Module/USB/USBinterfClassHID.cpp"
 #include "Module/USB/USBdeviceSimpleIO.cpp"
+
+

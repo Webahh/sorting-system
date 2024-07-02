@@ -30,11 +30,11 @@ namespace so {
     }
 
     void Crane::raiseArm() {
-        m_arm.open();
+        m_arm.close();
     }
 
     void Crane::lowerArm() {
-        m_arm.close();
+        m_arm.open();
     }
 
     void Crane::enablePad() {
