@@ -1,12 +1,12 @@
 #pragma once
 
 #include "EmbSysLib.h"
-#include "Backend/AirPressureSensor.h"
+#include "AnalogPart.h"
 
 namespace so {
     class PressureController {
     public:
-        PressureController(EmbSysLib::Dev::Digital& portPressure, const AirPressureSensor& pressureSensor)
+        PressureController(EmbSysLib::Dev::Digital& portPressure, const AnalogPart& pressureSensor)
             : m_portPressure(portPressure),
 			  m_pressureSensor(pressureSensor),
 			  m_bEnable(false)
@@ -21,7 +21,7 @@ namespace so {
 
         private:
             EmbSysLib::Dev::Digital& m_portPressure;
-            AirPressureSensor m_pressureSensor;
+            AnalogPart m_pressureSensor;
             bool m_bEnable;
             int m_scale;
     };

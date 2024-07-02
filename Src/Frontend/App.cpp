@@ -1,9 +1,8 @@
+#include <Frontend/SOController.h>
 #include "App.h"
 #include "Backend/PressureController.h"
 #include "Backend/Crane.h"
-#include "Backend/ColorSensor.h"
-#include "Backend/AirPressureSensor.h"
-#include "SOControllerBase.h"
+#include "Backend/AnalogPart.h"
 #include "events.h"
 #include "EmbSysLib.h"
 
@@ -43,7 +42,7 @@ const int screenSize = 4;
 namespace so {
     void App::init(){
         m_soController = new SOController();
-        m_pressureController = new PressureController(pressureControllerPort, AirPressureSensor(adc, airPressureSensorPort));
+        m_pressureController = new PressureController(pressureControllerPort, AnalogPart(adc, airPressureSensorPort));
         m_crane = new Crane
         		(
         			Motor(motorLeftPort, motorRightPort),
@@ -52,7 +51,7 @@ namespace so {
 					AirVent(armVentPort),
 					AirVent(padVentPort)
 				);
-        m_colorSensor = new ColorSensor(adc, colorSensorPort);
+        m_colorSensor = new AnalogPart(adc, colorSensorPort);
         m_lightBarrier = new DigitalPart(lightBarrierPort);
         m_screen = new Screen(screenSize);
         System::delayMilliSec(100);
@@ -132,7 +131,7 @@ namespace so {
         return m_crane;
     }
 
-    ColorSensor* App::getColorSensor() const {
+    AnalogPart* App::getColorSensor() const {
         return m_colorSensor;
     }
 

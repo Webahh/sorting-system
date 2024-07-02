@@ -1,7 +1,6 @@
 #pragma once
 
-#include "SOControllerBase.h"
-
+#include <Frontend/SOController.h>
 #include "App.h"
 #include "Backend/Crane.h"
 

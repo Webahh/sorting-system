@@ -1,6 +1,6 @@
 #pragma once
 
-#include "SOControllerBase.h"
+#include <Frontend/SOController.h>
 #include <cstddef>
 
 namespace so {

@@ -1,5 +1,5 @@
-#ifndef DIGITALPORT_H
-#define DIGITALPORT_H
+#pragma once
+
 #include "EmbSysLib.h"
 
 //Part.h müsste die Embsyslib includen
@@ -20,4 +20,4 @@ namespace so {
             EmbSysLib::Dev::Digital& m_digitalPort;
     };
 }
-#endif // DIGITALPORT_H
+

@@ -1,6 +1,6 @@
 #pragma once
+#include <Frontend/SOController.h>
 #include "EventReceiver.h"
-#include "SOControllerBase.h"
 #include "Screen.h"
 #include "Display.h"
 #include "Menu.h"
@@ -12,7 +12,7 @@ namespace so {
     class SOController;
     class PressureController;
     class Crane;
-    class ColorSensor;
+    class AnalogPart;
     class DigitalPart;
 
     class App : public EmbSysLib::Dev::TaskManager::Task, public EventReceiver {
@@ -48,7 +48,7 @@ namespace so {
         SOController* getSOController() const;
         PressureController* getPressureController() const;
         Crane* getCrane() const;
-        ColorSensor* getColorSensor() const;
+        AnalogPart* getColorSensor() const;
         DigitalPart* getLightBarrier() const;
         Screen* getScreen() const;
 
@@ -57,7 +57,7 @@ namespace so {
         SOController* m_soController;
         PressureController* m_pressureController;
         Crane* m_crane; 
-        ColorSensor* m_colorSensor;
+        AnalogPart* m_colorSensor;
         DigitalPart* m_lightBarrier;
         Screen* m_screen;
     };

@@ -1,7 +1,7 @@
 #include "AutoStates.h"
 #include "App.h"
 #include "Backend/Crane.h"
-#include "Backend/ColorSensor.h"
+#include "Backend/AnalogPart.h"
 #include "Backend/DigitalPart.h"
 #include "Backend/PressureController.h"
 
@@ -61,17 +61,16 @@ namespace AutoStates {
 	   SOState stateCheckColor(){
 		  App& app = App::get();
 
-		  static const int colorWhite = 40000;
-		  static const int colorRedLow = 40000, colorRedHigh = 50000;
-		  static const int colorBlue = 50000;
+		  static const int limitRedWhite = 40000;
+		  static const int limitWhiteBlue = 50000;
 
-		  if(app.getColorSensor()->getValue() < colorWhite){
+		  if(app.getColorSensor()->getValue() < limitRedWhite){
 			 return buildState([](){ App::get().getCrane()->raiseArm();}, SOState(stateMoveToDropperMiddle, 25));
 		  }
-		  else if(app.getColorSensor()->getValue() > colorRedLow && app.getColorSensor()->getValue() < colorRedHigh){
+		  else if(app.getColorSensor()->getValue() > limitRedWhite && app.getColorSensor()->getValue() < limitWhiteBlue){
 			  return buildState([](){ App::get().getCrane()->raiseArm();}, SOState(stateMoveToDropperLeft, 25));
 		  }
-		  else if(app.getColorSensor()->getValue() > colorBlue){
+		  else if(app.getColorSensor()->getValue() > limitWhiteBlue){
 			  return buildState([](){ App::get().getCrane()->raiseArm();}, SOState(stateMoveToDropperRight, 25));
 		  }
 

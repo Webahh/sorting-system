@@ -1,5 +1,4 @@
-#ifndef ANALOGPART_H
-#define ANALOGPART_H
+#pragma once
 
 #include "EmbSysLib.h"
 
@@ -24,4 +23,4 @@ namespace so {
 		int m_port;
 	};
 }
-#endif
+

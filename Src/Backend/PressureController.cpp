@@ -4,27 +4,20 @@ namespace so {
 
 void PressureController::enable(){
     	m_bEnable = true;
-		if(!m_portPressure.get()){
-			m_portPressure.set(true);
-		}
     }
 
     void PressureController::disable(){
     	m_bEnable = false;
-    	if(m_portPressure.get()){
-    		m_portPressure.set(false);
-    	}
     }
 
     void PressureController::calibrate(){
     	m_scale = m_pressureSensor.getValue();
     }
 
-    // Hilfsfunktion
     int PressureController::getPressure() const{
-    	int jesus = m_pressureSensor.getValue();
+    	m_pressureSensor.getValue();
 
-    	return jesus-m_scale;
+    	return m_pressureSensor.getValue()-m_scale; // Good Bye Jesus!
     }
 
     void PressureController::checkPressure(){
@@ -36,6 +29,8 @@ void PressureController::enable(){
 			if (PressureController::getPressure()<=5500){ // Bottom Histerese
 				m_portPressure.set(true);
 			}
+    	}else{
+    		m_portPressure.set(false);
     	}
     }
 }

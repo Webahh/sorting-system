@@ -1,4 +1,4 @@
-#include "SOControllerBase.h"
+#include <Frontend/SOController.h>
 
 namespace so {
 

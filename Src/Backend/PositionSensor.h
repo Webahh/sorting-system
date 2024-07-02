@@ -1,5 +1,4 @@
-#ifndef POSITIONSENSOR_H
-#define POSITIONSENSOR_H
+#pragma once
 
 #include "DigitalPart.h"
 
@@ -26,4 +25,4 @@ namespace so {
     };
 
 }
-#endif //POSITIONSENSOR_H
+
