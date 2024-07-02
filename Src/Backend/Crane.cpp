@@ -30,11 +30,11 @@ namespace so {
     }
 
     void Crane::raiseArm() {
-        m_arm.open();
+        m_arm.close();
     }
 
     void Crane::lowerArm() {
-        m_arm.close();
+        m_arm.open();
     }
 
     void Crane::enablePad() {
@@ -43,6 +43,19 @@ namespace so {
 
     void Crane::disablePad() {
         m_pad.close();
+    }
+
+    const Motor& Crane::getMotor() const{
+        return m_motor;
+    }
+    const DigitalPart& Crane::getEndswitch() const{
+        return m_endswitch;
+    }
+    const AirVent& Crane::getArmVent() const{
+        return m_arm;
+    }
+    const AirVent& Crane::getPadVent() const{
+        return m_pad;
     }
 
 }

@@ -1,33 +1,24 @@
-//*******************************************************************
+#include <Frontend/Clock.h>
+#include "Frontend/App.h"
+#include "Frontend/AutoStates.h"
+#include "Frontend/Screen.h"
+#include "Frontend/SplashDisplay.h"
 #include "config.h"
 
+using namespace so;
 //***********t********************************************************
 int main(void)
 {
-	while(1){
-		crane.updatePosition();
 
-		switch(enc.getEvent()){
-			case DigitalEncoder::LEFT:
-				crane.turnLeft();
-				break;
-			case DigitalEncoder::RIGHT:
-				crane.turnRight();
-				break;
-			case DigitalEncoder::CTRL_DWN:
-				crane.halt();
-				break;
-			default:
-				break;
-		}
-		disp.printf(0, 0, "endS State: %d", endswitchPort.get());
-		disp.printf(1, 0, "Pos State: %d", positionSensorPort.get());
-		disp.printf(2, 0, "lb State: %d", lbPort.get());
-		disp.printf(3, 0, "Pos: %3d", crane.getPosition());
+	App::get().init();
+	App::get().getScreen()->showDisplay<SplashDisplay>();
+	app_taskManager.add(&App::get());
+	app_taskManager.add(&SOClock::get());
 
-		disp.refresh();
-	};
+	while(1){};
 
-	return 0;}
+	App::get().terminate();
+	return 0;
+}
 
 

@@ -1,28 +1,13 @@
 #include "MenuButton.h"
 
-void MenuButton::update(){
+namespace so {
+
+		void MenuButton::setOnClick(const std::function<void()>& onClickFunc){
+			m_onClickFunc = onClickFunc;
+		}
+
+		void MenuButton::onClick(){
+			m_onClickFunc();
+		}
 
 }
-
-void MenuButton::draw(){
-	
-}
-
-void MenuButton::select(){
-	onClick();
-}
-
-void MenuButton::focus(bool hasFocus){
-	m_isFocused = hasFocus;
-}
-
-void MenuButton::onClick(){
-}
-
-bool MenuButton::addChildMenu(std::shared_ptr<MenuEntry> ) {
-        return false; 
-    }
-
-bool MenuButton::removeChildMenu(std::shared_ptr<MenuEntry>) {
-        return false; 
-    }
