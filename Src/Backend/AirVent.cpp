@@ -9,4 +9,8 @@ namespace so {
     void AirVent::close(){
         m_portAirVent.set(false);
     }
+
+    bool AirVent::isOpen() const{
+    	return m_portAirVent.get();
+    }
 }

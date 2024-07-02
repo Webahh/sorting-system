@@ -2,8 +2,6 @@
 
 #include "SOControllerBase.h"
 
-#include "App.h"
-#include "Backend/Crane.h"
 
 namespace so {
 
@@ -13,6 +11,8 @@ namespace so {
    
    SOState raiseArm(); 
    SOState lowerArm(); 
+   SOState toggleArm();
+
    
    SOState enablePad(); 
    SOState disablePad(); 

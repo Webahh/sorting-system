@@ -31,6 +31,7 @@ extern Digital positionSensorPort;
 extern Digital endswitchPort;
 extern Digital lightBarrierPort;
 
+extern Digital btn0;
 extern DigitalEncoderRotaryknob encoderWheel;
 
 //Analog
@@ -114,6 +115,10 @@ namespace so {
 			default:
 				break;
 		}
+
+    	if(btn0.getEvent()){
+    		dispatchEvent(menuBtnActionEventType);
+    	}
     }
 
     bool App::isValid() const {

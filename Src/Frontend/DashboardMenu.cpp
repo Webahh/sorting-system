@@ -13,13 +13,6 @@ namespace so {
 						  .text("-- Dashboard Menu --")
 						  .build(),
 		      MenuBuilder<MenuText>()
-			  	  	  	  .onUpdate([this]()
-						  {
-				  	  	  	  m_cranePostionText->setText("Crane Position: ");
-						  })
-						  .assign(m_cranePostionText)
-						  .build(),
-			  MenuBuilder<MenuText>()
 						  .onUpdate([this]()
 						  {
 				  	  	  	  m_airPressureText->setText("Air Pressure: " + std::to_string(App::get().getPressureController()->getPressure()));

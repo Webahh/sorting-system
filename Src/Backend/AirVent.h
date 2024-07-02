@@ -5,15 +5,17 @@
 namespace so {
     class AirVent{
     public:
-        AirVent(const EmbSysLib::Dev::Digital& portAirPressure)
+        AirVent(EmbSysLib::Dev::Digital& portAirPressure)
             : m_portAirVent(portAirPressure)
         {} 
 
         void open();
 	    void close();
 
+	    bool isOpen() const;
+
         private:
-            EmbSysLib::Dev::Digital m_portAirVent;
+            EmbSysLib::Dev::Digital& m_portAirVent;
     };
 }
 

@@ -2,7 +2,7 @@
 #include "MenuText.h"
 #include "MenuButton.h"
 #include "App.h"
-#include "AutoStates.h"
+#include "ManualStates.h"
 #include "DashboardMenu.h"
 
 namespace so {
@@ -18,6 +18,7 @@ namespace so {
 								BIND_EVENT(menuBtnClickEventType, &ManualSortMenu::onMenuBtnClickEvent),
 								BIND_EVENT(menuBtnActionEventType, &ManualSortMenu::onMenuBtnActionEvent)
 							});
+			App::get().getSOController()->reset();
 		}
 
 	void ManualSortMenu::setup(std::vector<std::shared_ptr<MenuEntry>>& menuEntries){
@@ -46,7 +47,7 @@ namespace so {
 
 	void ManualSortMenu::onScrollUpEvent() {
 		if(m_bManualMovement){
-			//TODO: call manual state turn left
+			App::get().getSOController()->run(turnLeft);
 		}else{
 			onMoveCursorUp();
 		}
@@ -54,7 +55,7 @@ namespace so {
 
 	void ManualSortMenu::onScrollDownEvent(){
 		if(m_bManualMovement){
-			//TODO: call manual state turn right
+			App::get().getSOController()->run(turnRight);
 		}else{
 			onMoveCursorDown();
 		}
@@ -62,7 +63,7 @@ namespace so {
 
 	void ManualSortMenu::onMenuBtnClickEvent(){
 		if(m_bManualMovement){
-			//TODO: call manual state raise lower/arm
+			App::get().getSOController()->run(toggleArm);
 		}else{
 			forwardEvent(menuBtnClickEventType);
 		}

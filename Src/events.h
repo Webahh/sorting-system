@@ -7,5 +7,5 @@ namespace so {
 	const EventType scrollUpEventType("scrollUpEventType");
 	const EventType scrollDownEventType("scrollDownEventType");
 	const EventType menuBtnClickEventType("menuBtnClickEventType");
-	const EventType menuBtnActionEventType("onMenuBtnActionEvent");
+	const EventType menuBtnActionEventType("menuBtnActionEventType");
 }
