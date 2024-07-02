@@ -29,11 +29,11 @@ namespace so {
             m_time++;
         }
 
-        u_int64_t getTime() const{
+        LWORD getTime() const{
             return m_time;
         }
 
 private:
-        u_int64_t m_time;
+        LWORD m_time;
     };
 }    

@@ -1,6 +1,6 @@
+#include <Frontend/ManualSortMenu.h>
 #include "MainDisplay.h"
 #include "AutoSortMenu.h"
-#include "ManuelSortMenu.h"
 #include "DashboardMenu.h"
 #include "MenuText.h"
 #include "MenuButton.h"
@@ -39,10 +39,10 @@ namespace so {
 						  .build(),
 
 			    MenuBuilder<MenuButton>()
-						  .text("Manuel sort")
+						  .text("Manual sort")
 						  .onClick([](){
 								App::get().getSOController()->reset();
-								App::get().getScreen()->showDisplay<ManuelSortMenu>();
+								App::get().getScreen()->showDisplay<ManualSortMenu>();
 						  })
 						  .build(),
 

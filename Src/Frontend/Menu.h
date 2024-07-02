@@ -41,7 +41,7 @@ namespace so {
 		private:
 			std::vector<std::shared_ptr<MenuEntry>> m_menuEntries;
 
-			u_int32_t m_displayPtr;
-			u_int32_t m_cursorPtr;
+			DWORD m_displayPtr;
+			DWORD m_cursorPtr;
 	};
 }

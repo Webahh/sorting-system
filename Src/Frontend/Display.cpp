@@ -4,11 +4,11 @@ namespace so {
 
 	void Display::setup(){}
 
-	u_int32_t Display::getSize() const{
+	DWORD Display::getSize() const{
 			return m_displaySize;
 	}
 
-	void Display::setSize(u_int32_t size){
+	void Display::setSize(DWORD size){
 		m_displaySize = size;
 	}
 }

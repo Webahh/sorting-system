@@ -20,7 +20,7 @@ namespace so{
         }
         
         template<typename F>
-		SOState(F func, u_int32_t delay)
+		SOState(F func, DWORD delay)
 			: m_func(func)
 			, m_startTime(SOClock::get().getTime())
 			, m_delay(delay)
@@ -34,7 +34,7 @@ namespace so{
         {
         }
 
-        u_int64_t getStartTime() const{
+        LWORD getStartTime() const{
             return m_startTime;
         }
 
@@ -42,15 +42,15 @@ namespace so{
         	m_startTime = SOClock::get().getTime();
         }
 
-        u_int64_t getDelay() const{
+        LWORD getDelay() const{
         	return m_startTime;
         }
 
-        u_int64_t setDelay() const{
+        LWORD setDelay() const{
 			return m_startTime;
 		}
 
-        u_int64_t getExecTime() const {
+        LWORD getExecTime() const {
         	return m_startTime + m_delay;
         }
 
@@ -64,12 +64,12 @@ namespace so{
 
     private:
         std::function<SOState()> m_func;
-        u_int64_t m_startTime;
-        u_int32_t m_delay;
+        LWORD m_startTime;
+        DWORD m_delay;
     };
 
     template<typename F>
-	static SOState buildState(F&& func, SOState&& exitState, u_int32_t delay = 0){
+	static SOState buildState(F&& func, SOState&& exitState, DWORD delay = 0){
 		return SOState([=]() mutable {
 			func();
 			exitState.resetStartTime();

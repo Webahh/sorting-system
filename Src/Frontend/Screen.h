@@ -13,7 +13,7 @@ namespace so {
 	class Screen : public EventReceiver
 	{
 		public:
-			Screen(u_int32_t displaySize)
+			Screen(DWORD displaySize)
 			  : m_displaySize(displaySize)
 			{
 			}
@@ -38,14 +38,14 @@ namespace so {
 			virtual std::shared_ptr<Display> getActiveDisplay() const;
 
 
-			u_int32_t getSize() const;
-			void setSize(u_int32_t size);
+			DWORD getSize() const;
+			void setSize(DWORD size);
 
 		protected:
 			std::shared_ptr<Display> showDisplayImpl();
 
 		private:
-			u_int32_t m_displaySize;
+			DWORD m_displaySize;
 			std::list<std::shared_ptr<Display>> m_displayStack;
 	};
 }

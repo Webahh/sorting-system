@@ -33,10 +33,10 @@ namespace so {
 			lines.push_back(menuEntry->draw());
 		}
 
-		const u_int32_t start = m_displayPtr;
-		const u_int32_t end = start + getSize();
+		const DWORD start = m_displayPtr;
+		const DWORD end = start + getSize();
 
-		for(u_int32_t i = start; i < end; i++){
+		for(DWORD i = start; i < end; i++){
 			std::string line;
 
 			if(i == m_cursorPtr)

@@ -2,6 +2,7 @@
 #include "MenuText.h"
 #include "MenuButton.h"
 #include "App.h"
+#include "Backend/PressureController.h"
 
 namespace so {
 
@@ -21,7 +22,7 @@ namespace so {
 			  MenuBuilder<MenuText>()
 						  .onUpdate([this]()
 						  {
-				  	  	  	  m_airPressureText->setText("Air Pressure: ");
+				  	  	  	  m_airPressureText->setText("Air Pressure: " + std::to_string(App::get().getPressureController()->getPressure()));
 						  })
 						  .assign(m_airPressureText)
 						  .build(),

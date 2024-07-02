@@ -59,11 +59,11 @@ namespace so {
 		return m_displayStack.front();
 	}
 
-	u_int32_t Screen::getSize() const{
+	DWORD Screen::getSize() const{
 		return m_displaySize;
 	}
 
-	void Screen::setSize(u_int32_t size){
+	void Screen::setSize(DWORD size){
 		m_displaySize = size;
 	}
 }

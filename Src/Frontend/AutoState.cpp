@@ -3,6 +3,7 @@
 #include "Backend/Crane.h"
 #include "Backend/ColorSensor.h"
 #include "Backend/DigitalPart.h"
+#include "Backend/PressureController.h"
 
 namespace so {
 
@@ -98,10 +99,12 @@ namespace AutoStates {
 	   }
 
 	   SOState stateCheckItemExists(){
-		  if(App::get().getLightBarrier()->getState()){
+		  App& app = App::get();
+		  if(app.getLightBarrier()->getState()){
+			  app.getPressureController()->enable();
 			 return SOState(stateCollectItem);
 		  }
-
+		  app.getPressureController()->disable();
 		  return SOState(stateCheckItemExists);
 	   }
 

@@ -37,6 +37,8 @@ EmbSysLib::Hw::PinConfig::MAP EmbSysLib::Hw::PinConfig::table[] =
 //TIMER
 Timer_Mcu app_timer(Timer_Mcu::TIM_10, 10000L);
 TaskManager app_taskManager(app_timer);
+Timer_Mcu adc_timer(Timer_Mcu::TIM_2, 1000L);
+
 
 //--------------------------------------------------------------------------------------//
 //PORTS
@@ -64,7 +66,7 @@ Digital    rotCtrl ( portA,15, Digital::InPU, 1 );
 DigitalEncoderRotaryknob  encoderWheel( &rotA, &rotB, &rotCtrl, app_taskManager );
 
 //Analog
- Adc_Mcu adc(app_timer);
+ Adc_Mcu adc(adc_timer);
 const int colorSensorPort = 3;
 
 //-------------------------------------------------------------------

@@ -22,10 +22,10 @@ namespace so {
 			virtual void update() = 0;
 			virtual void render() = 0;
 
-			u_int32_t getSize() const;
-			void setSize(u_int32_t size);
+			DWORD getSize() const;
+			void setSize(DWORD size);
 
 		private:
-			u_int32_t m_displaySize;
+			DWORD m_displaySize;
 	};
 }

@@ -4,10 +4,10 @@
 
 namespace so {
 
-	class ManuelSortMenu : public Menu
+	class ManualSortMenu : public Menu
 	{
 	public:
-		ManuelSortMenu();
+		ManualSortMenu();
 
 	protected:
 		virtual void setup(std::vector<std::shared_ptr<MenuEntry>>& menuEntries) override;
@@ -19,7 +19,7 @@ namespace so {
 
 
 	private:
-		bool m_bManuelMovement;
+		bool m_bManualMovement;
 
 	};
 }

@@ -2,6 +2,7 @@
 #include "Backend/PressureController.h"
 #include "Backend/Crane.h"
 #include "Backend/ColorSensor.h"
+#include "Backend/AirPressureSensor.h"
 #include "SOControllerBase.h"
 #include "events.h"
 #include "EmbSysLib.h"
@@ -35,13 +36,14 @@ extern DigitalEncoderRotaryknob encoderWheel;
 //Analog
 extern  Adc_Mcu adc;
 const int colorSensorPort = 3;
+const int airPressureSensorPort = 2;
 const int screenSize = 4;
 
 
 namespace so {
     void App::init(){
         m_soController = new SOController();
-        m_pressureController = new PressureController(pressureControllerPort);
+        m_pressureController = new PressureController(pressureControllerPort, AirPressureSensor(adc, airPressureSensorPort));
         m_crane = new Crane
         		(
         			Motor(motorLeftPort, motorRightPort),
@@ -53,6 +55,8 @@ namespace so {
         m_colorSensor = new ColorSensor(adc, colorSensorPort);
         m_lightBarrier = new DigitalPart(lightBarrierPort);
         m_screen = new Screen(screenSize);
+        System::delayMilliSec(100);
+        m_pressureController->calibrate();
     }
 
     void App::update(){
@@ -61,6 +65,7 @@ namespace so {
 
         m_crane->updatePosition(); 
         m_soController->update();
+        m_pressureController->checkPressure();
 
         handleEvents();
 
