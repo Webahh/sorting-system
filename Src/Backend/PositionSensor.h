@@ -1,5 +1,4 @@
 #pragma once
-
 #include "DigitalPart.h"
 
 namespace so {

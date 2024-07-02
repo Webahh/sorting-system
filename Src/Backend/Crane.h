@@ -36,7 +36,7 @@ namespace so {
         const AirVent& getArmVent() const;
         const AirVent& getPadVent() const;
 
-private:
+    private:
         Motor m_motor;
         PositionSensor m_positionSensor;
         DigitalPart m_endswitch;

@@ -4,9 +4,10 @@
 #include "AnalogPart.h"
 
 namespace so {
+
     class PressureController {
     public:
-        PressureController(EmbSysLib::Dev::Digital& portPressure, const AnalogPart& pressureSensor)
+        PressureController(EmbSysLib::Dev::Digital& portPressure, const AnalogPart& pressureSensor) //Composition with PressureSensor
             : m_portPressure(portPressure),
 			  m_pressureSensor(pressureSensor),
 			  m_bEnable(false)

@@ -3,16 +3,16 @@
 #include "EmbSysLib.h"
 
 namespace so {
-//will inherit from Class Part
+
+	// Used for ColorSensor & PressureSensor
 	class AnalogPart {
 	public:
 
-		//Con needs ref of Adc_Mcu Obj
-		AnalogPart(EmbSysLib::Hw::Adc_Mcu& adc, int port)
+		AnalogPart(EmbSysLib::Hw::Adc_Mcu& adc, int channel)
 		: m_adc(adc)
-		, m_port(port)
+		, m_channel(channel)
 		{
-			adc.enable(m_port);
+			adc.enable(m_channel);
 		}
 
 
@@ -20,7 +20,7 @@ namespace so {
 
 	private:
 		EmbSysLib::Hw::Adc_Mcu& m_adc;
-		int m_port;
+		int m_channel;
 	};
 }
 

@@ -2,8 +2,10 @@
 
 #include "EmbSysLib.h"
 
-//Part.h müsste die Embsyslib includen
+
 namespace so {
+
+	// Used for Lightbarrier & Endswitch
     class DigitalPart 
     {
         public:
