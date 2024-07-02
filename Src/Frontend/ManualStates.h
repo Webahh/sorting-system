@@ -5,15 +5,17 @@
 
 namespace so {
 
-   SOState turnLeft(); 
-   SOState turnRight(); 
-   SOState halt(); 
-   
-   SOState raiseArm(); 
-   SOState lowerArm(); 
-   SOState toggleArm();
+	namespace ManualStates {
+	   SOState turnLeft();
+	   SOState turnRight();
+	   SOState halt();
 
-   
-   SOState enablePad(); 
-   SOState disablePad(); 
+	   SOState raiseArm();
+	   SOState lowerArm();
+	   SOState toggleArm();
+
+
+	   SOState enablePad();
+	   SOState disablePad();
+	}
 }

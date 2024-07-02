@@ -6,6 +6,7 @@
 namespace so {
 	namespace AutoStates {
 
+
    SOState stateDropItem();
    SOState stateMoveToDropperGarbage();
    SOState stateMoveToDropperLeft();
@@ -16,5 +17,8 @@ namespace so {
    SOState stateCollectItem();
    SOState stateCheckItemExists();
    SOState stateMoveToLoader();
+
+   void stateBeginAutoMovement();
+   void stateLeaveAutoMovement();
 	}
 }

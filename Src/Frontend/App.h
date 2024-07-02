@@ -1,8 +1,5 @@
 #pragma once
-#include "EventReceiver.h"
 #include "SOControllerBase.h"
-#include "Screen.h"
-#include "Display.h"
 #include "Menu.h"
 
 #include <memory>
@@ -15,7 +12,13 @@ namespace so {
     class ColorSensor;
     class DigitalPart;
 
-    class App : public EmbSysLib::Dev::TaskManager::Task, public EventReceiver {
+    enum SortMode{
+    	OFF,
+		MANUAL,
+		AUTO,
+    };
+
+    class App : public EmbSysLib::Dev::TaskManager::Task {
         public:
         static App& get()
         {
@@ -24,13 +27,8 @@ namespace so {
         }
 
         App()
-        {
-        	setupMappings(
-        			{
-
-        			}
-        	);
-        }
+        	: m_sortMode(SortMode::OFF)
+        {}
 
     public:
         App(App const&)             = delete;
@@ -38,27 +36,28 @@ namespace so {
         
         virtual void init();
         virtual void update() override;
-        virtual bool forwardEvent(const EventType& eventType) override;
         virtual void terminate();
 
         void handleEvents();
 
         bool isValid() const;
 
+        SortMode getSortMode() const;
         SOController* getSOController() const;
         PressureController* getPressureController() const;
         Crane* getCrane() const;
         ColorSensor* getColorSensor() const;
         DigitalPart* getLightBarrier() const;
-        Screen* getScreen() const;
+        Menu* getMenu() const;
 
 
     private:
+        SortMode m_sortMode;
         SOController* m_soController;
         PressureController* m_pressureController;
         Crane* m_crane; 
         ColorSensor* m_colorSensor;
         DigitalPart* m_lightBarrier;
-        Screen* m_screen;
+        Menu* m_menu;
     };
 }

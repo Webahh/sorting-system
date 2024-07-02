@@ -1,113 +1,75 @@
 #include "Menu.h"
-#include "MenuEntry.h"
+#include "App.h"
+#include "Backend/Crane.h"
+#include "Backend/ColorSensor.h"
+#include "Backend/PositionSensor.h"
+#include "Backend/PressureController.h"
+
 
 extern EmbSysLib::Dev::ScreenChar disp;
 
 namespace so {
-	Menu::Menu()
-	 : m_displayPtr()
-	 , m_cursorPtr()
-	{
-		setupMappings({
-						BIND_EVENT(scrollUpEventType, &Menu::onMoveCursorUp),
-						BIND_EVENT(scrollDownEventType, &Menu::onMoveCursorDown)
-					});
-	}
 
-	void Menu::setup(){
-		if(m_menuEntries.empty())
-			setup(m_menuEntries);
-	}
 
 	void Menu::update(){
-		for(std::shared_ptr<MenuEntry>& menuEntry : m_menuEntries) {
-			menuEntry->update();
+
+		const int64_t currentTime = SOClock::get().getTime();
+		if(currentTime - (int64_t)m_nextUpdateTime < 0){
+			return;
 		}
+
+		m_nextUpdateTime = currentTime + 30;
+
+		std::string sortMode = "<invalid>";
+
+		switch(App::get().getSortMode()){
+			case SortMode::OFF:
+				sortMode = "OFF";
+				break;
+			case SortMode::AUTO:
+				sortMode = "AUTO";
+				break;
+			case SortMode::MANUAL:
+				sortMode = "MANUAL";
+				break;
+			default:
+				break;
+		}
+
+		m_menuEntries = {
+			"Mode: " + sortMode,
+			"Crane Position: " + std::to_string(App::get().getCrane()->getPosition()),
+			"Air Pressure: " + std::to_string(App::get().getPressureController()->getPressure()),
+			"Detected Color: " + std::to_string(App::get().getColorSensor()->getValue()),
+			"LB-State: " + std::string(App::get().getLightBarrier()->getState() ? "True" : "False"),
+		};
 	}
 
 	void Menu::render(){
 
-		std::vector<std::string> lines;
+		const int start = m_displayPtr;
+		const int end = start + m_displaySize;
 
-		for(std::shared_ptr<MenuEntry>& menuEntry : m_menuEntries) {
-			lines.push_back(menuEntry->draw());
+		for(int i = start; i < end; i++) {
+			disp.printf(i-start, 0, "%-20s", m_menuEntries[i].c_str());
 		}
 
-		const DWORD start = m_displayPtr;
-		const DWORD end = start + getSize();
-
-		for(DWORD i = start; i < end; i++){
-			std::string line;
-
-			if(i == m_cursorPtr)
-				line += ">";
-
-			if(i < lines.size())
-				line += lines[i];
-
-			disp.printf(i - start, 0, "%-20s", line.c_str());
-		}
+		disp.refresh();
 	}
-
-
-
-	bool Menu::forwardEvent(const EventType& eventType){
-		if(std::shared_ptr<MenuEntry> menuEntry = getSelectedMenuEntry()){
-			if(std::shared_ptr<EventReceiver> eventReceiver = std::static_pointer_cast<EventReceiver>(menuEntry)){
-				return eventReceiver->dispatchEvent(eventType);
-			}
-		}
-
-		return false;
-	}
-
-	std::shared_ptr<MenuEntry> Menu::getSelectedMenuEntry() const{
-			if(m_cursorPtr < m_menuEntries.size()){
-				return m_menuEntries[m_cursorPtr];
-			}
-
-			return nullptr;
-		}
 
 	void Menu::onMoveDisplayUp(){
-		m_displayPtr--;
+		if(m_displayPtr <= 0){
+			m_displayPtr = 0;
+		}else{
+			m_displayPtr--;
+		}
 	}
 
 	void Menu::onMoveDisplayDown(){
-		m_displayPtr++;
-	}
-
-	void Menu::onResetDisplayPosition(){
-		m_displayPtr = 0;
-		m_cursorPtr = 0;
-	}
-
-	void Menu::onMoveCursorUp(){
-
-		if(m_cursorPtr <= 0){
-			m_cursorPtr = 0;
-			return;
+		if(m_displayPtr >= m_menuEntries.size() - m_displaySize){
+			m_displayPtr = m_menuEntries.size() - m_displaySize;
+		}else{
+			m_displayPtr++;
 		}
-
-		m_cursorPtr--;
-		if(m_cursorPtr < m_displayPtr ){
-			onMoveDisplayUp();
-		}
-	}
-
-	void Menu::onMoveCursorDown(){
-		if(m_cursorPtr >= m_menuEntries.size() - 1){
-			m_cursorPtr = m_menuEntries.size() - 1;
-			return;
-		}
-
-		m_cursorPtr++;
-		if(m_cursorPtr >= m_displayPtr + getSize()){
-			onMoveDisplayDown();
-		}
-	}
-
-	void Menu::onResetCursorPosition(){
-		m_cursorPtr = m_displayPtr;
 	}
 }

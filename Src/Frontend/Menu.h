@@ -1,47 +1,33 @@
 #pragma once
 
-#include <Frontend/EventReceiver.h>
-
 #include "EmbSysLib.h"
-#include "Display.h"
-#include <memory>
 #include <vector>
+#include <string>
+
 
 namespace so {
 
-	class MenuEntry;
-
-	extern const EventType scrollUpEventType;
-	extern const EventType scrollDownEventType;
-
-	class Menu : public Display
+	class Menu
 	{
 		public:
-			Menu();
+			Menu(WORD displaySize)
+				: m_displaySize(displaySize)
+				, m_displayPtr(0)
+				, m_nextUpdateTime(0)
+			{}
 
-			virtual void setup() override;
-			virtual void update() override;
-			virtual void render() override;
-			virtual bool forwardEvent(const EventType& eventType) override;
-
-			std::shared_ptr<MenuEntry> getSelectedMenuEntry() const;
-
-		protected:
-			virtual void setup(std::vector<std::shared_ptr<MenuEntry>>& menuEntries) = 0;
+			virtual void update();
+			virtual void render();
 
 			// Events
 			void onMoveDisplayUp();
 			void onMoveDisplayDown();
 			void onResetDisplayPosition();
 
-			void onMoveCursorUp();
-			void onMoveCursorDown();
-			void onResetCursorPosition();
-
 		private:
-			std::vector<std::shared_ptr<MenuEntry>> m_menuEntries;
-
+			std::vector<std::string> m_menuEntries;
+			WORD m_displaySize;
 			DWORD m_displayPtr;
-			DWORD m_cursorPtr;
+			LWORD m_nextUpdateTime;
 	};
 }

@@ -8,6 +8,9 @@
 namespace so {
 
 namespace AutoStates {
+
+		bool bAutoState = false;
+
 		static SOState moveToPosition(const SOState& startFunc, const SOState& exitFunc, int pos){
 
 			App& app = App::get();
@@ -121,6 +124,21 @@ namespace AutoStates {
 		  }
 
 		  return SOState(stateMoveToLoader);
+	   }
+
+	   void stateBeginAutoMovement(){
+		   if(!bAutoState){
+			   bAutoState = true;
+			   App::get().getSOController()->reset();
+			   App::get().getSOController()->run(SOState(stateMoveToLoader));
+		   }
+	   }
+
+	   void stateLeaveAutoMovement(){
+		   if(bAutoState){
+			   bAutoState = false;
+			   App::get().getSOController()->reset();
+		   }
 	   }
 	}
 }

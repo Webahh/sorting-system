@@ -4,42 +4,53 @@
 
 namespace so {
 
-	template<typename F>
-	SOState turn(const SOState& startState, MotorDirection direction,  F&& func){
-		App& app = App::get();
-		static int pos = -1;
+	namespace ManualStates{
+
+		template<typename F>
+		SOState turn(const SOState& startState, MotorDirection direction, F&& func){		   App::get().getSOController()->reset();
+
+			App& app = App::get();
+			static int pos = -1;
 
 			if(app.getCrane()->getMotor().getDirection() != direction){
-				if(pos != 1)
+				if(pos == -1)
 					pos = app.getCrane()->getPosition();
-
 				func();
-			}else if(app.getCrane()->getPosition() == pos + 1){
+			}else if(std::abs(app.getCrane()->getPosition() - pos) > 0 ||
+					(app.getCrane()->getMotor().getDirection() !=  MotorDirection::RIGHT_TURN
+							&& app.getCrane()->getEndswitch().getState())){
 				pos = -1;
 				app.getCrane()->halt();
 				return nullptr;
 			}
 
-			return startState;
-	}
-
-
-	SOState turnLeft(){
-		return turn(SOState(turnLeft), MotorDirection::LEFT_TURN, [](){App::get().getCrane()->turnLeft();});
-	}
-
-	SOState turnRight(){
-		return turn(SOState(turnRight), MotorDirection::RIGHT_TURN, [](){App::get().getCrane()->turnRight();});
-	}
-
-	SOState toggleArm(){
-
-		if(App::get().getCrane()->getArmVent().isOpen()) {
-			App::get().getCrane()->raiseArm();
-		}else{
-			App::get().getCrane()->lowerArm();
+				return startState;
 		}
 
-		return nullptr;
+		bool bManualState = false;
+
+		SOState turnLeft(){
+			return turn(SOState(turnLeft), MotorDirection::LEFT_TURN, [](){App::get().getCrane()->turnLeft();});
+		}
+
+		SOState turnRight(){
+			return turn(SOState(turnRight), MotorDirection::RIGHT_TURN, [](){App::get().getCrane()->turnRight();});
+		}
+
+		SOState toggleArm(){
+
+			if(App::get().getCrane()->getArmVent().isOpen()) {
+				App::get().getCrane()->raiseArm();
+				return nullptr;
+			}else{
+				App::get().getCrane()->lowerArm();
+
+				if(!App::get().getCrane()->getPadVent().isOpen()){
+					return buildState([](){ App::get().getCrane()->enablePad();}, nullptr, 200);
+				}else{
+					return buildState([](){ App::get().getCrane()->disablePad();}, nullptr, 100);
+				}
+			}
+		}
 	}
 }

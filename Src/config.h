@@ -60,7 +60,10 @@ Digital positionSensorPort(portC, 2, Digital::InPU, 0);
 Digital endswitchPort(portA, 7, Digital::InPU, 1);
 Digital lightBarrierPort(portC, 3, Digital::InPU, 0);
 
-Digital btn0 ( portC, 7, Digital::In, 0 );
+Digital btn1 ( portC, 0, Digital::InPU, 1 );
+Digital btn2 ( portC, 1, Digital::InPU, 1 );
+Digital btn3 ( portC, 6, Digital::InPU, 1 );
+Digital btn4 ( portC, 7, Digital::InPU, 1 );
 Digital    rotA    ( portA, 8, Digital::InPU, 1 );
 Digital    rotB    ( portA, 1, Digital::InPU, 1 );
 Digital    rotCtrl ( portA,15, Digital::InPU, 1 );
