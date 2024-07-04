@@ -1,9 +1,10 @@
 #pragma once
 
-#include "Backend/Motor.h"
-#include "Backend/PositionSensor.h"
-#include "Backend/DigitalPart.h"
-#include "Backend/AirVent.h"
+#include "movement/Motor.h"
+#include "movement/AirVent.h"
+#include "sensoric/PositionSensor.h"
+#include "sensoric/DigitalPart.h"
+
 
 namespace so {
     class Crane {

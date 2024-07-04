@@ -1,6 +1,6 @@
 #pragma once
 
-#include <Frontend/Clock.h>
+#include "logic/Clock.h"
 #include <cstddef>
 #include <list>
 #include <functional>
@@ -30,7 +30,7 @@ namespace so{
         SOState(std::nullptr_t)
             : m_func(nullptr)
         	, m_startTime(SOClock::get().getTime())
-        			, m_delay(0)
+        	, m_delay(0)
         {
         }
 
@@ -68,9 +68,9 @@ namespace so{
         DWORD m_delay;
     };
 
-    template<typename F>
-	static SOState buildState(F&& func, SOState&& exitState, DWORD delay = 0){
-		return SOState([=]() mutable {
+    	template<typename F>
+    	static SOState buildState(F&& func, SOState&& exitState, DWORD delay = 0){
+    		return SOState([=]() mutable {
 			func();
 			exitState.resetStartTime();
 			return exitState;

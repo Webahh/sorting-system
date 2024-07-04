@@ -1,10 +1,6 @@
 #pragma once
-#include <Frontend/SOController.h>
-#include "EventReceiver.h"
-#include "Screen.h"
-#include "Display.h"
-#include "Menu.h"
-
+#include "logic/SOController.h"
+#include "ui/Menu.h"
 #include <memory>
 
 namespace so {
@@ -15,7 +11,13 @@ namespace so {
     class AnalogPart;
     class DigitalPart;
 
-    class App : public EmbSysLib::Dev::TaskManager::Task, public EventReceiver {
+    enum SortMode{
+        	OFF,
+    		MANUAL,
+    		AUTO,
+        };
+
+    class App : public EmbSysLib::Dev::TaskManager::Task{
         public:
         static App& get()
         {
@@ -24,13 +26,8 @@ namespace so {
         }
 
         App()
-        {
-        	setupMappings(
-        			{
-
-        			}
-        	);
-        }
+        : m_sortMode(SortMode::OFF)
+        {}
 
     public:
         App(App const&)             = delete;
@@ -38,27 +35,28 @@ namespace so {
         
         virtual void init();
         virtual void update() override;
-        virtual bool forwardEvent(const EventType& eventType) override;
         virtual void terminate();
 
         void handleEvents();
 
         bool isValid() const;
 
+        SortMode getSortMode() const;
         SOController* getSOController() const;
         PressureController* getPressureController() const;
         Crane* getCrane() const;
         AnalogPart* getColorSensor() const;
         DigitalPart* getLightBarrier() const;
-        Screen* getScreen() const;
+        Menu* getMenu() const;
 
 
     private:
+        SortMode m_sortMode;
         SOController* m_soController;
         PressureController* m_pressureController;
         Crane* m_crane; 
         AnalogPart* m_colorSensor;
         DigitalPart* m_lightBarrier;
-        Screen* m_screen;
+        Menu* m_menu;
     };
 }

@@ -1,4 +1,4 @@
-#include "PositionSensor.h"
+#include "sensoric/PositionSensor.h"
 
 namespace so {
             void PositionSensor::updateLeft()

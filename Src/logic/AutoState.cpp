@@ -1,13 +1,17 @@
-#include "AutoStates.h"
-#include "App.h"
-#include "Backend/Crane.h"
-#include "Backend/AnalogPart.h"
-#include "Backend/DigitalPart.h"
-#include "Backend/PressureController.h"
+#include "logic/AutoStates.h"
+#include "ui/App.h"
+#include "movement/Crane.h"
+#include "movement/PressureController.h"
+#include "sensoric/AnalogPart.h"
+#include "sensoric/DigitalPart.h"
+
 
 namespace so {
 
 namespace AutoStates {
+
+		bool bAutoState = false;
+
 		static SOState moveToPosition(const SOState& startFunc, const SOState& exitFunc, int pos){
 
 			App& app = App::get();
@@ -61,16 +65,17 @@ namespace AutoStates {
 	   SOState stateCheckColor(){
 		  App& app = App::get();
 
-		  static const int limitRedWhite = 40000;
-		  static const int limitWhiteBlue = 50000;
+		  static const int colorWhite = 40000;
+		  static const int colorRedLow = 40000, colorRedHigh = 50000;
+		  static const int colorBlue = 50000;
 
-		  if(app.getColorSensor()->getValue() < limitRedWhite){
+		  if(app.getColorSensor()->getValue() < colorWhite){
 			 return buildState([](){ App::get().getCrane()->raiseArm();}, SOState(stateMoveToDropperMiddle, 25));
 		  }
-		  else if(app.getColorSensor()->getValue() > limitRedWhite && app.getColorSensor()->getValue() < limitWhiteBlue){
+		  else if(app.getColorSensor()->getValue() > colorRedLow && app.getColorSensor()->getValue() < colorRedHigh){
 			  return buildState([](){ App::get().getCrane()->raiseArm();}, SOState(stateMoveToDropperLeft, 25));
 		  }
-		  else if(app.getColorSensor()->getValue() > limitWhiteBlue){
+		  else if(app.getColorSensor()->getValue() > colorBlue){
 			  return buildState([](){ App::get().getCrane()->raiseArm();}, SOState(stateMoveToDropperRight, 25));
 		  }
 
@@ -120,6 +125,21 @@ namespace AutoStates {
 		  }
 
 		  return SOState(stateMoveToLoader);
+	   }
+
+	   void stateBeginAutoMovement(){
+		   if(!bAutoState){
+			   bAutoState = true;
+			   App::get().getSOController()->reset();
+			   App::get().getSOController()->run(SOState(stateMoveToLoader));
+		   }
+	   }
+
+	   void stateLeaveAutoMovement(){
+		   if(bAutoState){
+			   bAutoState = false;
+			   App::get().getSOController()->reset();
+		   }
 	   }
 	}
 }

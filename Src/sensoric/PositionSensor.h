@@ -1,5 +1,6 @@
 #pragma once
-#include "DigitalPart.h"
+
+#include "sensoric/DigitalPart.h"
 
 namespace so {
     class PositionSensor : public DigitalPart

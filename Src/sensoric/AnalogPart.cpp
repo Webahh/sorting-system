@@ -1,4 +1,4 @@
-#include "AnalogPart.h"
+#include "sensoric/AnalogPart.h"
 namespace so {
 
     int AnalogPart::getValue() const{

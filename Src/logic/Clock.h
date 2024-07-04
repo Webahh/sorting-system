@@ -1,10 +1,7 @@
 #pragma once
 
 #include "EmbSysLib.h"
-
 #include <sys/types.h>
-
-
 
 namespace so {
     class SOClock : public EmbSysLib::Dev::TaskManager::Task
