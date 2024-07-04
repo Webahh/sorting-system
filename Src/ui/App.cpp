@@ -61,7 +61,6 @@ namespace so {
         m_lightBarrier = new DigitalPart(lightBarrierPort);
         m_menu = new Menu(screenSize);
         System::delayMilliSec(100);
-        m_pressureController->calibrate();
     }
 
     void App::update(){

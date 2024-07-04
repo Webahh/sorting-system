@@ -38,7 +38,7 @@ namespace so {
 		m_menuEntries = {
 			"Mode: " + sortMode,
 			"Crane Position: " + std::to_string(App::get().getCrane()->getPosition()),
-			"Air Pressure: " + std::to_string(App::get().getPressureController()->getPressure()),
+			"Pressure: " + std::string(App::get().getPressureController()->showPressure()),
 			"Detected Color: " + std::to_string(App::get().getColorSensor()->getValue()),
 			"LB-State: " + std::string(App::get().getLightBarrier()->getState() ? "True" : "False"),
 		};

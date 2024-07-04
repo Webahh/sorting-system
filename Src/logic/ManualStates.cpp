@@ -46,7 +46,7 @@ namespace so {
 				App::get().getCrane()->lowerArm();
 
 				if(!App::get().getCrane()->getPadVent().isOpen()){
-					return buildState([](){ App::get().getCrane()->enablePad();}, nullptr, 200);
+					return buildState([](){ App::get().getCrane()->enablePad();}, nullptr, 150);
 				}else{
 					return buildState([](){ App::get().getCrane()->disablePad();}, nullptr, 100);
 				}

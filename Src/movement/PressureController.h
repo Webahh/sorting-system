@@ -2,6 +2,7 @@
 
 #include "sensoric/AnalogPart.h"
 #include "EmbSysLib.h"
+#include <string>
 
 namespace so {
 
@@ -10,21 +11,22 @@ namespace so {
         PressureController(EmbSysLib::Dev::Digital& portPressure, const AnalogPart& pressureSensor) //Composition with PressureSensor
             : m_portPressure(portPressure),
 			  m_pressureSensor(pressureSensor),
-			  m_bEnable(false)
+			  m_bEnable(false),
+        	  m_enoughPressure(true)
 
         {} 
 
         void enable();
 	    void disable();
 	    void checkPressure();
-	    void calibrate();
 	    int getPressure() const;
+	    std::string showPressure();
 
         private:
             EmbSysLib::Dev::Digital& m_portPressure;
             AnalogPart m_pressureSensor;
             bool m_bEnable;
-            int m_scale;
+            bool m_enoughPressure;
     };
 }
 

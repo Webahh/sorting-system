@@ -30,7 +30,7 @@ namespace so {
             return m_time;
         }
 
-private:
+    private:
         LWORD m_time;
     };
 }    
