@@ -4,6 +4,7 @@
 #include "movement/PressureController.h"
 #include "sensoric/AnalogPart.h"
 #include "sensoric/PositionSensor.h"
+#include "logic/AutoStates.h"
 
 extern EmbSysLib::Dev::ScreenChar disp;
 
@@ -27,6 +28,13 @@ namespace so {
 				break;
 			case SortMode::AUTO:
 				sortMode = "AUTO";
+
+				if(App::get().getSOController()->isPaused()){
+					sortMode += " (Paused)";
+				}else if(AutoStates::getIsMoveToGarbage()){
+					sortMode += " (Garbage)";
+				}
+
 				break;
 			case SortMode::MANUAL:
 				sortMode = "MANUAL";
@@ -39,8 +47,9 @@ namespace so {
 			"Mode: " + sortMode,
 			"Crane Position: " + std::to_string(App::get().getCrane()->getPosition()),
 			"Pressure: " + std::string(App::get().getPressureController()->showPressure()),
-			"Detected Color: " + std::to_string(App::get().getColorSensor()->getValue()),
+			"Last Color: " + AutoStates::getLastDetectedColor(),
 			"LB-State: " + std::string(App::get().getLightBarrier()->getState() ? "True" : "False"),
+			"Item Count: " + std::to_string(AutoStates::getItemCount()),
 		};
 	}
 

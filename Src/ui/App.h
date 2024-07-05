@@ -37,8 +37,6 @@ namespace so {
         virtual void update() override;
         virtual void terminate();
 
-        void handleEvents();
-
         bool isValid() const;
 
         SortMode getSortMode() const;
@@ -49,6 +47,11 @@ namespace so {
         DigitalPart* getLightBarrier() const;
         Menu* getMenu() const;
 
+    protected:
+        void handleEvents();
+        void handleEventNoSort();
+        void handleEventAutoSort();
+        void handleEventManualSort();
 
     private:
         SortMode m_sortMode;

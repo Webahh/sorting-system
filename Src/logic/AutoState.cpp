@@ -10,7 +10,9 @@ namespace so {
 
 namespace AutoStates {
 
-		bool bAutoState = false;
+		bool bMoveToGarbage = false;
+		int itemCount = 0;
+		std::string lastDetectedColor;
 
 		static SOState moveToPosition(const SOState& startFunc, const SOState& exitFunc, int pos){
 
@@ -35,9 +37,15 @@ namespace AutoStates {
 		  App& app = App::get();
 		  SOController& con = *app.getSOController();
 
-		  con.run(buildState([](){ App::get().getCrane()->lowerArm();}, nullptr, 20));
-		  con.run(buildState([](){ App::get().getCrane()->disablePad();}, nullptr, 50));
-		  con.run(buildState([](){ App::get().getCrane()->raiseArm();}, SOState(stateMoveToLoader, 10), 80));
+		  if(!bMoveToGarbage){
+			  itemCount++;
+		  }
+
+		  setIsMoveToGarbage(false);
+
+		  con.run(buildState([](){ App::get().getCrane()->lowerArm();}, nullptr, 25));
+		  con.run(buildState([](){ App::get().getCrane()->disablePad();}, nullptr, 30));
+		  con.run(buildState([](){ App::get().getCrane()->raiseArm();}, SOState(stateMoveToLoader, 10), 30));
 
 		  return nullptr;
 	   }
@@ -65,17 +73,19 @@ namespace AutoStates {
 	   SOState stateCheckColor(){
 		  App& app = App::get();
 
-		  static const int colorWhite = 40000;
-		  static const int colorRedLow = 40000, colorRedHigh = 50000;
-		  static const int colorBlue = 50000;
+		  static const int limitWhiteRed = 40000;
+		  static const int limitRedBlue = 50000;
 
-		  if(app.getColorSensor()->getValue() < colorWhite){
+		  if(app.getColorSensor()->getValue() < limitWhiteRed){
+			 lastDetectedColor = "White";
 			 return buildState([](){ App::get().getCrane()->raiseArm();}, SOState(stateMoveToDropperMiddle, 25));
 		  }
-		  else if(app.getColorSensor()->getValue() > colorRedLow && app.getColorSensor()->getValue() < colorRedHigh){
+		  else if(app.getColorSensor()->getValue() > limitWhiteRed && app.getColorSensor()->getValue() < limitRedBlue){
+			  lastDetectedColor = "Red";
 			  return buildState([](){ App::get().getCrane()->raiseArm();}, SOState(stateMoveToDropperLeft, 25));
 		  }
-		  else if(app.getColorSensor()->getValue() > colorBlue){
+		  else if(app.getColorSensor()->getValue() > limitRedBlue){
+			  lastDetectedColor = "Blue";
 			  return buildState([](){ App::get().getCrane()->raiseArm();}, SOState(stateMoveToDropperRight, 25));
 		  }
 
@@ -87,7 +97,7 @@ namespace AutoStates {
 
 		  return moveToPosition(
 				  stateMoveToColorSensor,
-				  buildState([](){App::get().getCrane()->lowerArm();}, SOState(stateCheckColor, 25), 25),
+				  bMoveToGarbage ? SOState(stateMoveToDropperGarbage) : buildState([](){App::get().getCrane()->lowerArm();}, SOState(stateCheckColor, 25), 25),
 				  colorSensorPosition);
 	   }
 
@@ -95,9 +105,9 @@ namespace AutoStates {
 		  App& app = App::get();
 		  SOController& con = *app.getSOController();
 
-		  con.run(buildState([](){ App::get().getCrane()->lowerArm();}, nullptr, 10));
+		  con.run(buildState([](){ App::get().getCrane()->lowerArm();}, nullptr, 50));
 		  con.run(buildState([](){ App::get().getCrane()->enablePad();}, nullptr, 50));
-		  con.run(buildState([](){ App::get().getCrane()->raiseArm();}, SOState(stateMoveToColorSensor, 25), 80));
+		  con.run(buildState([](){ App::get().getCrane()->raiseArm();}, SOState(stateMoveToColorSensor, 20), 50));
 
 		  return nullptr;
 	   }
@@ -108,6 +118,9 @@ namespace AutoStates {
 			  app.getPressureController()->enable();
 			 return SOState(stateCollectItem);
 		  }
+
+		  itemCount = 0;
+
 		  app.getPressureController()->disable();
 		  return SOState(stateCheckItemExists);
 	   }
@@ -121,25 +134,32 @@ namespace AutoStates {
 			 return SOState(stateCheckItemExists);
 		  }
 		  else if(app.getCrane()->getMotor().getDirection() != MotorDirection::LEFT_TURN){
+			 app.getCrane()->raiseArm();
+			 app.getCrane()->disablePad();
 			 app.getCrane()->turnLeft();
 		  }
 
 		  return SOState(stateMoveToLoader);
 	   }
 
-	   void stateBeginAutoMovement(){
-		   if(!bAutoState){
-			   bAutoState = true;
-			   App::get().getSOController()->reset();
-			   App::get().getSOController()->run(SOState(stateMoveToLoader));
-		   }
+	   int getItemCount(){
+		   return itemCount;
 	   }
 
-	   void stateLeaveAutoMovement(){
-		   if(bAutoState){
-			   bAutoState = false;
-			   App::get().getSOController()->reset();
-		   }
+	   void setItemCount(int count){
+		   itemCount = count;
+	   }
+
+	   const std::string& getLastDetectedColor(){
+		   return lastDetectedColor;
+	   }
+
+	   bool getIsMoveToGarbage(){
+		   return bMoveToGarbage;
+	   }
+
+	   void setIsMoveToGarbage(bool bGarbage){
+		   bMoveToGarbage = bGarbage;
 	   }
 	}
 }

@@ -46,6 +46,7 @@ const int screenSize = 4;
 
 
 namespace so {
+
     void App::init(){
         m_soController = new SOController();
         m_pressureController = new PressureController(pressureControllerPort, AnalogPart(adc, airPressureSensorPort));
@@ -96,72 +97,6 @@ namespace so {
     }
 
 
-    void App::handleEvents(){
-    	switch(App::get().getSortMode()){
-    				case SortMode::OFF:
-    				{
-    					switch(encoderWheel.getEvent())
-    					{
-    						case DigitalEncoder::LEFT:     m_menu->onMoveDisplayUp(); break;
-    						case DigitalEncoder::RIGHT:    m_menu->onMoveDisplayDown(); break;
-    						default:                                 break;
-    					}
-
-    					if(btn4.getEvent() == Digital::ACTIVATED){
-    						m_sortMode = SortMode::AUTO;
-    						m_soController->reset();
-    						m_soController->run(SOState(AutoStates::stateMoveToLoader));
-    					}
-
-    					if(btn3.getEvent() == Digital::ACTIVATED){
-    						m_sortMode = SortMode::MANUAL;
-    						m_soController->reset();
-    						m_pressureController->enable();
-    					}
-    				}
-    					break;
-    				case SortMode::AUTO:
-    					switch(encoderWheel.getEvent())
-    					{
-    						case DigitalEncoder::LEFT:     m_menu->onMoveDisplayUp(); break;
-    						case DigitalEncoder::RIGHT:    m_menu->onMoveDisplayDown(); break;
-    						default:                                 break;
-    					}
-    					if(btn4.getEvent() == Digital::ACTIVATED){
-    						m_sortMode = SortMode::OFF;
-    						m_soController->reset();
-    					}
-    					break;
-    				case SortMode::MANUAL:
-    					{
-    						switch(encoderWheel.getEvent())
-    						{
-    							case DigitalEncoder::LEFT:
-    								m_soController->run(SOState(ManualStates::turnLeft));
-    							break;
-    							case DigitalEncoder::RIGHT:
-    								m_soController->run(SOState(ManualStates::turnRight));
-    								break;
-    							case DigitalEncoder::CTRL_DWN:
-    								m_soController->run(SOState(ManualStates::toggleArm));
-    								break;
-    							default:
-    								break;
-    						}
-
-    						if(btn3.getEvent() == Digital::ACTIVATED){
-    							m_sortMode = SortMode::OFF;
-    							m_soController->reset();
-    							m_pressureController->disable();
-    						}
-    					}
-    					break;
-    				default:
-    					break;
-
-    			}
-
-    	    }
 
 
     bool App::isValid() const {
@@ -195,4 +130,110 @@ namespace so {
     Menu* App::getMenu() const{
     	return m_menu;
     }
+
+    void App::handleEvents(){
+       	switch(App::get().getSortMode()){
+			case SortMode::OFF:
+				handleEventNoSort();
+				break;
+			case SortMode::AUTO:
+				handleEventAutoSort();
+				break;
+			case SortMode::MANUAL:
+				handleEventManualSort();
+				break;
+			default:
+				break;
+
+		}
+    }
+
+    void App::handleEventNoSort(){
+    	switch(encoderWheel.getEvent())
+		{
+			case DigitalEncoder::LEFT:
+				m_menu->onMoveDisplayUp();
+				break;
+			case DigitalEncoder::RIGHT:
+				m_menu->onMoveDisplayDown();
+				break;
+			default:
+				break;
+		}
+
+		if(btn4.getEvent() == Digital::ACTIVATED){
+			m_sortMode = SortMode::AUTO;
+			m_soController->reset();
+			m_soController->run(SOState(AutoStates::stateMoveToLoader));
+		}
+
+		if(btn3.getEvent() == Digital::ACTIVATED){
+			m_sortMode = SortMode::MANUAL;
+			m_soController->reset();
+			m_pressureController->enable();
+		}
+    }
+
+	void App::handleEventAutoSort(){
+		switch(encoderWheel.getEvent())
+		{
+			case DigitalEncoder::LEFT:
+				m_menu->onMoveDisplayUp();
+				break;
+			case DigitalEncoder::RIGHT:
+				m_menu->onMoveDisplayDown();
+				break;
+			default:
+				break;
+		}
+
+		if(btn4.getEvent() == Digital::ACTIVATED){
+			m_sortMode = SortMode::OFF;
+			m_soController->reset();
+			m_soController->resume();
+			AutoStates::setIsMoveToGarbage(false);
+			AutoStates::setItemCount(0);
+			m_crane->halt();
+			m_crane->raiseArm();
+			m_crane->disablePad();
+		}
+
+		if(btn3.getEvent() == Digital::ACTIVATED){
+			if(m_soController->isPaused()){
+				m_soController->resume();
+			}
+			else
+			{
+				m_soController->pause();
+				m_crane->halt();
+			}
+		}
+
+		if(btn2.getEvent() == Digital::ACTIVATED){
+			AutoStates::setIsMoveToGarbage(!AutoStates::getIsMoveToGarbage());
+		}
+	}
+
+	void App::handleEventManualSort(){
+		switch(encoderWheel.getEvent())
+		{
+			case DigitalEncoder::LEFT:
+				m_soController->run(SOState(ManualStates::turnLeft));
+			break;
+			case DigitalEncoder::RIGHT:
+				m_soController->run(SOState(ManualStates::turnRight));
+				break;
+			case DigitalEncoder::CTRL_DWN:
+				m_soController->run(SOState(ManualStates::toggleArm));
+				break;
+			default:
+				break;
+		}
+
+		if(btn3.getEvent() == Digital::ACTIVATED){
+			m_sortMode = SortMode::OFF;
+			m_soController->reset();
+			m_pressureController->disable();
+		}
+	}
 }

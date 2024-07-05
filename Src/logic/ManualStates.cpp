@@ -17,8 +17,7 @@ namespace so {
 					pos = app.getCrane()->getPosition();
 				func();
 			}else if(std::abs(app.getCrane()->getPosition() - pos) > 0 ||
-					(app.getCrane()->getMotor().getDirection() !=  MotorDirection::RIGHT_TURN
-							&& app.getCrane()->getEndswitch().getState())){
+					(app.getCrane()->getMotor().getDirection() !=  MotorDirection::RIGHT_TURN && app.getCrane()->getEndswitch().getState())){
 				pos = -1;
 				app.getCrane()->halt();
 				return nullptr;

@@ -2,6 +2,7 @@
 
 #include "logic/SOController.h"
 #include <cstddef>
+#include <string>
 
 namespace so {
 	namespace AutoStates {
@@ -17,7 +18,10 @@ namespace so {
 	   SOState stateCheckItemExists();
 	   SOState stateMoveToLoader();
 
-	   void stateBeginAutoMovement();
-	   void stateLeaveAutoMovement();
+	   int getItemCount();
+	   void setItemCount(int count);
+	   const std::string& getLastDetectedColor();
+	   bool getIsMoveToGarbage();
+	   void setIsMoveToGarbage(bool bGarbage);
 	}
 }
