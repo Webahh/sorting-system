@@ -1,9 +1,9 @@
 #pragma once
 
 #include "EmbSysLib.h"
+#include <memory>
 #include <vector>
 #include <string>
-
 
 namespace so {
 
@@ -11,9 +11,9 @@ namespace so {
 	{
 		public:
 			Menu(WORD displaySize)
-				: m_displaySize(displaySize)
-				, m_displayPtr(0)
-				, m_nextUpdateTime(0)
+			: m_displaySize(displaySize)
+			, m_displayPtr(0)
+			, m_nextUpdateTime(0)
 			{}
 
 			virtual void update();

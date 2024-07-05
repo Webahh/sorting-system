@@ -18,5 +18,3 @@ namespace so {
             EmbSysLib::Dev::Digital& m_portAirVent;
     };
 }
-
-

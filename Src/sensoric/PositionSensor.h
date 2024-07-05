@@ -1,7 +1,6 @@
-#ifndef POSITIONSENSOR_H
-#define POSITIONSENSOR_H
+#pragma once
 
-#include "DigitalPart.h"
+#include "sensoric/DigitalPart.h"
 
 namespace so {
     class PositionSensor : public DigitalPart
@@ -26,4 +25,4 @@ namespace so {
     };
 
 }
-#endif //POSITIONSENSOR_H
+

@@ -1,7 +1,6 @@
 #pragma once
-#include "SOControllerBase.h"
-#include "Menu.h"
-
+#include "logic/SOController.h"
+#include "ui/Menu.h"
 #include <memory>
 
 namespace so {
@@ -9,16 +8,16 @@ namespace so {
     class SOController;
     class PressureController;
     class Crane;
-    class ColorSensor;
+    class AnalogPart;
     class DigitalPart;
 
     enum SortMode{
-    	OFF,
-		MANUAL,
-		AUTO,
-    };
+        	OFF,
+    		MANUAL,
+    		AUTO,
+        };
 
-    class App : public EmbSysLib::Dev::TaskManager::Task {
+    class App : public EmbSysLib::Dev::TaskManager::Task{
         public:
         static App& get()
         {
@@ -27,7 +26,7 @@ namespace so {
         }
 
         App()
-        	: m_sortMode(SortMode::OFF)
+        : m_sortMode(SortMode::OFF)
         {}
 
     public:
@@ -46,7 +45,7 @@ namespace so {
         SOController* getSOController() const;
         PressureController* getPressureController() const;
         Crane* getCrane() const;
-        ColorSensor* getColorSensor() const;
+        AnalogPart* getColorSensor() const;
         DigitalPart* getLightBarrier() const;
         Menu* getMenu() const;
 
@@ -56,7 +55,7 @@ namespace so {
         SOController* m_soController;
         PressureController* m_pressureController;
         Crane* m_crane; 
-        ColorSensor* m_colorSensor;
+        AnalogPart* m_colorSensor;
         DigitalPart* m_lightBarrier;
         Menu* m_menu;
     };

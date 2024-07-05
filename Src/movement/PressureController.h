@@ -1,29 +1,32 @@
 #pragma once
 
+#include "sensoric/AnalogPart.h"
 #include "EmbSysLib.h"
-#include "Backend/AirPressureSensor.h"
+#include <string>
 
 namespace so {
+
     class PressureController {
     public:
-        PressureController(EmbSysLib::Dev::Digital& portPressure, const AirPressureSensor& pressureSensor)
+        PressureController(EmbSysLib::Dev::Digital& portPressure, const AnalogPart& pressureSensor) //Composition with PressureSensor
             : m_portPressure(portPressure),
 			  m_pressureSensor(pressureSensor),
-			  m_bEnable(false)
+			  m_bEnable(false),
+        	  m_enoughPressure(true)
 
         {} 
 
         void enable();
 	    void disable();
 	    void checkPressure();
-	    void calibrate();
 	    int getPressure() const;
+	    std::string showPressure();
 
         private:
             EmbSysLib::Dev::Digital& m_portPressure;
-            AirPressureSensor m_pressureSensor;
+            AnalogPart m_pressureSensor;
             bool m_bEnable;
-            int m_scale;
+            bool m_enoughPressure;
     };
 }
 

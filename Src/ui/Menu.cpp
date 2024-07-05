@@ -1,10 +1,9 @@
-#include "Menu.h"
-#include "App.h"
-#include "Backend/Crane.h"
-#include "Backend/ColorSensor.h"
-#include "Backend/PositionSensor.h"
-#include "Backend/PressureController.h"
-
+#include "ui/Menu.h"
+#include "ui/App.h"
+#include "movement/Crane.h"
+#include "movement/PressureController.h"
+#include "sensoric/AnalogPart.h"
+#include "sensoric/PositionSensor.h"
 
 extern EmbSysLib::Dev::ScreenChar disp;
 
@@ -39,7 +38,7 @@ namespace so {
 		m_menuEntries = {
 			"Mode: " + sortMode,
 			"Crane Position: " + std::to_string(App::get().getCrane()->getPosition()),
-			"Air Pressure: " + std::to_string(App::get().getPressureController()->getPressure()),
+			"Pressure: " + std::string(App::get().getPressureController()->showPressure()),
 			"Detected Color: " + std::to_string(App::get().getColorSensor()->getValue()),
 			"LB-State: " + std::string(App::get().getLightBarrier()->getState() ? "True" : "False"),
 		};

@@ -1,9 +1,10 @@
 #pragma once
 
-#include "Backend/Motor.h"
-#include "Backend/PositionSensor.h"
-#include "Backend/DigitalPart.h"
-#include "Backend/AirVent.h"
+#include "movement/Motor.h"
+#include "movement/AirVent.h"
+#include "sensoric/PositionSensor.h"
+#include "sensoric/DigitalPart.h"
+
 
 namespace so {
     class Crane {
@@ -36,7 +37,7 @@ namespace so {
         const AirVent& getArmVent() const;
         const AirVent& getPadVent() const;
 
-private:
+    private:
         Motor m_motor;
         PositionSensor m_positionSensor;
         DigitalPart m_endswitch;

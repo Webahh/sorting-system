@@ -1,13 +1,11 @@
-#include "App.h"
-#include "Backend/PressureController.h"
-#include "Backend/Crane.h"
-#include "Backend/ColorSensor.h"
-#include "Backend/AirPressureSensor.h"
-#include "SOControllerBase.h"
-#include "AutoStates.h"
-#include "ManualStates.h"
+#include "ui/App.h"
+#include "movement/PressureController.h"
+#include "movement/Crane.h"
+#include "sensoric/AnalogPart.h"
+#include "logic/SOController.h"
+#include "logic/AutoStates.h"
+#include "logic/ManualStates.h"
 #include "EmbSysLib.h"
-
 
 using namespace EmbSysLib::Hw;
 using namespace EmbSysLib::Dev;
@@ -50,7 +48,7 @@ const int screenSize = 4;
 namespace so {
     void App::init(){
         m_soController = new SOController();
-        m_pressureController = new PressureController(pressureControllerPort, AirPressureSensor(adc, airPressureSensorPort));
+        m_pressureController = new PressureController(pressureControllerPort, AnalogPart(adc, airPressureSensorPort));
         m_crane = new Crane
         		(
         			Motor(motorLeftPort, motorRightPort),
@@ -59,11 +57,10 @@ namespace so {
 					AirVent(armVentPort),
 					AirVent(padVentPort)
 				);
-        m_colorSensor = new ColorSensor(adc, colorSensorPort);
+        m_colorSensor = new AnalogPart(adc, colorSensorPort);
         m_lightBarrier = new DigitalPart(lightBarrierPort);
         m_menu = new Menu(screenSize);
         System::delayMilliSec(100);
-        m_pressureController->calibrate();
     }
 
     void App::update(){
@@ -79,6 +76,7 @@ namespace so {
         m_menu->update();
         m_menu->render();
     }
+
 
     void App::terminate(){
         if(m_pressureController){
@@ -99,81 +97,80 @@ namespace so {
 
 
     void App::handleEvents(){
-
     	switch(App::get().getSortMode()){
-			case SortMode::OFF:
-			{
-				switch(encoderWheel.getEvent())
-				{
-					case DigitalEncoder::LEFT:     m_menu->onMoveDisplayUp(); break;
-					case DigitalEncoder::RIGHT:    m_menu->onMoveDisplayDown(); break;
-					default:                                 break;
-				}
+    				case SortMode::OFF:
+    				{
+    					switch(encoderWheel.getEvent())
+    					{
+    						case DigitalEncoder::LEFT:     m_menu->onMoveDisplayUp(); break;
+    						case DigitalEncoder::RIGHT:    m_menu->onMoveDisplayDown(); break;
+    						default:                                 break;
+    					}
 
-				if(btn4.getEvent() == Digital::ACTIVATED){
-					m_sortMode = SortMode::AUTO;
-					m_soController->reset();
-					m_soController->run(SOState(AutoStates::stateMoveToLoader));
-				}
+    					if(btn4.getEvent() == Digital::ACTIVATED){
+    						m_sortMode = SortMode::AUTO;
+    						m_soController->reset();
+    						m_soController->run(SOState(AutoStates::stateMoveToLoader));
+    					}
 
-				if(btn3.getEvent() == Digital::ACTIVATED){
-					m_sortMode = SortMode::MANUAL;
-					m_soController->reset();
-					m_pressureController->enable();
-				}
-			}
-				break;
-			case SortMode::AUTO:
-				switch(encoderWheel.getEvent())
-				{
-					case DigitalEncoder::LEFT:     m_menu->onMoveDisplayUp(); break;
-					case DigitalEncoder::RIGHT:    m_menu->onMoveDisplayDown(); break;
-					default:                                 break;
-				}
-				if(btn4.getEvent() == Digital::ACTIVATED){
-					m_sortMode = SortMode::OFF;
-					m_soController->reset();
-				}
-				break;
-			case SortMode::MANUAL:
-				{
-					switch(encoderWheel.getEvent())
-					{
-						case DigitalEncoder::LEFT:
-							m_soController->run(SOState(ManualStates::turnLeft));
-						break;
-						case DigitalEncoder::RIGHT:
-							m_soController->run(SOState(ManualStates::turnRight));
-							break;
-						case DigitalEncoder::CTRL_DWN:
-							m_soController->run(SOState(ManualStates::toggleArm));
-							break;
-						default:
-							break;
-					}
+    					if(btn3.getEvent() == Digital::ACTIVATED){
+    						m_sortMode = SortMode::MANUAL;
+    						m_soController->reset();
+    						m_pressureController->enable();
+    					}
+    				}
+    					break;
+    				case SortMode::AUTO:
+    					switch(encoderWheel.getEvent())
+    					{
+    						case DigitalEncoder::LEFT:     m_menu->onMoveDisplayUp(); break;
+    						case DigitalEncoder::RIGHT:    m_menu->onMoveDisplayDown(); break;
+    						default:                                 break;
+    					}
+    					if(btn4.getEvent() == Digital::ACTIVATED){
+    						m_sortMode = SortMode::OFF;
+    						m_soController->reset();
+    					}
+    					break;
+    				case SortMode::MANUAL:
+    					{
+    						switch(encoderWheel.getEvent())
+    						{
+    							case DigitalEncoder::LEFT:
+    								m_soController->run(SOState(ManualStates::turnLeft));
+    							break;
+    							case DigitalEncoder::RIGHT:
+    								m_soController->run(SOState(ManualStates::turnRight));
+    								break;
+    							case DigitalEncoder::CTRL_DWN:
+    								m_soController->run(SOState(ManualStates::toggleArm));
+    								break;
+    							default:
+    								break;
+    						}
 
-					if(btn3.getEvent() == Digital::ACTIVATED){
-						m_sortMode = SortMode::OFF;
-						m_soController->reset();
-						m_pressureController->disable();
-					}
-				}
-				break;
-			default:
-				break;
+    						if(btn3.getEvent() == Digital::ACTIVATED){
+    							m_sortMode = SortMode::OFF;
+    							m_soController->reset();
+    							m_pressureController->disable();
+    						}
+    					}
+    					break;
+    				default:
+    					break;
 
-		}
+    			}
 
-    }
+    	    }
+
 
     bool App::isValid() const {
         return m_soController && m_pressureController && m_crane && m_menu;
     }
 
     SortMode App::getSortMode() const{
-    	return m_sortMode;
-    }
-
+        	return m_sortMode;
+        }
 
     SOController* App::getSOController() const{
         return m_soController;
@@ -187,7 +184,7 @@ namespace so {
         return m_crane;
     }
 
-    ColorSensor* App::getColorSensor() const {
+    AnalogPart* App::getColorSensor() const {
         return m_colorSensor;
     }
 

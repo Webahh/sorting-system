@@ -1,6 +1,6 @@
-#include "ManualStates.h"
-#include "Backend/Crane.h"
-#include "App.h"
+#include "logic/ManualStates.h"
+#include "movement/Crane.h"
+#include "ui/App.h"
 
 namespace so {
 
@@ -46,7 +46,7 @@ namespace so {
 				App::get().getCrane()->lowerArm();
 
 				if(!App::get().getCrane()->getPadVent().isOpen()){
-					return buildState([](){ App::get().getCrane()->enablePad();}, nullptr, 200);
+					return buildState([](){ App::get().getCrane()->enablePad();}, nullptr, 150);
 				}else{
 					return buildState([](){ App::get().getCrane()->disablePad();}, nullptr, 100);
 				}

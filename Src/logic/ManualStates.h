@@ -1,6 +1,6 @@
 #pragma once
 
-#include "SOControllerBase.h"
+#include "logic/SOController.h"
 
 
 namespace so {

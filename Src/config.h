@@ -1,9 +1,9 @@
 #pragma once
 
-#include "EmbSysLib.h"
-#include "Backend/Crane.h"
-#include "Backend/PressureController.h"
+#include "movement/Crane.h"
+#include "movement/PressureController.h"
 #include "Hardware/Peripheral/Display/DisplayChar_DIP204spi.cpp"
+#include "EmbSysLib.h"
 
 #include <string>
 
@@ -60,17 +60,18 @@ Digital positionSensorPort(portC, 2, Digital::InPU, 0);
 Digital endswitchPort(portA, 7, Digital::InPU, 1);
 Digital lightBarrierPort(portC, 3, Digital::InPU, 0);
 
-Digital btn1 ( portC, 0, Digital::InPU, 1 );
-Digital btn2 ( portC, 1, Digital::InPU, 1 );
-Digital btn3 ( portC, 6, Digital::InPU, 1 );
-Digital btn4 ( portC, 7, Digital::InPU, 1 );
+
+Digital    btn1 ( portC, 0, Digital::InPU, 1 );
+Digital    btn2 ( portC, 1, Digital::InPU, 1 );
+Digital    btn3 ( portC, 6, Digital::InPU, 1 );
+Digital	   btn4 ( portC, 7, Digital::InPU, 1 );
 Digital    rotA    ( portA, 8, Digital::InPU, 1 );
 Digital    rotB    ( portA, 1, Digital::InPU, 1 );
 Digital    rotCtrl ( portA,15, Digital::InPU, 1 );
 DigitalEncoderRotaryknob  encoderWheel( &rotA, &rotB, &rotCtrl, app_taskManager );
 
 //Analog
- Adc_Mcu adc(adc_timer);
+Adc_Mcu adc(adc_timer);
 const int colorSensorPort = 3;
 
 //-------------------------------------------------------------------
@@ -80,6 +81,5 @@ SPImaster_Mcu         spi          ( SPImaster_Mcu::SPI_2, SPImaster_Mcu::CR_100
 SPImaster::Device     spiDevDisplay( spi, portB, 12 );
 DisplayChar_DIP204spi dispHw       ( spiDevDisplay );
 ScreenChar            disp         ( dispHw );
-
 
 

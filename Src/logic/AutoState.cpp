@@ -1,9 +1,10 @@
-#include "AutoStates.h"
-#include "App.h"
-#include "Backend/Crane.h"
-#include "Backend/ColorSensor.h"
-#include "Backend/DigitalPart.h"
-#include "Backend/PressureController.h"
+#include "logic/AutoStates.h"
+#include "ui/App.h"
+#include "movement/Crane.h"
+#include "movement/PressureController.h"
+#include "sensoric/AnalogPart.h"
+#include "sensoric/DigitalPart.h"
+
 
 namespace so {
 
@@ -34,7 +35,7 @@ namespace AutoStates {
 		  App& app = App::get();
 		  SOController& con = *app.getSOController();
 
-		  con.run(buildState([](){ App::get().getCrane()->lowerArm();}, nullptr, 10));
+		  con.run(buildState([](){ App::get().getCrane()->lowerArm();}, nullptr, 20));
 		  con.run(buildState([](){ App::get().getCrane()->disablePad();}, nullptr, 50));
 		  con.run(buildState([](){ App::get().getCrane()->raiseArm();}, SOState(stateMoveToLoader, 10), 80));
 

@@ -1,4 +1,4 @@
-#include "DigitalPart.h"
+#include "sensoric/DigitalPart.h"
 
 namespace so {
 
