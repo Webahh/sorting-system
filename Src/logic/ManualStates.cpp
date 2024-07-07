@@ -6,24 +6,36 @@ namespace so {
 
 	namespace ManualStates{
 
+		// helper function to turn the crane
 		template<typename F>
-		SOState turn(const SOState& startState, MotorDirection direction, F&& func){		   App::get().getSOController()->reset();
-
+		SOState turn(const SOState& startState, MotorDirection direction, F&& func){		   
+			
 			App& app = App::get();
+
+			// saves the start position so that the end position can be determined 
 			static int pos = -1;
 
+			// clear all other requests
+			app.getSOController()->reset();
+
+			// Checks whether the crane is already moving in the desired direction
 			if(app.getCrane()->getMotor().getDirection() != direction){
 				if(pos == -1)
 					pos = app.getCrane()->getPosition();
+
+				// Executes the function to move the crane
 				func();
-			}else if(std::abs(app.getCrane()->getPosition() - pos) > 0 ||
+			}
+			// Checks whether the crane has already moved by one position 	
+			else if(std::abs(app.getCrane()->getPosition() - pos) > 0 ||
 					(app.getCrane()->getMotor().getDirection() !=  MotorDirection::RIGHT_TURN && app.getCrane()->getEndswitch().getState())){
 				pos = -1;
 				app.getCrane()->halt();
 				return nullptr;
 			}
 
-				return startState;
+			// repeat current state
+			return startState;
 		}
 
 		bool bManualState = false;

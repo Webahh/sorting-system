@@ -14,6 +14,7 @@ namespace AutoStates {
 		int itemCount = 0;
 		std::string lastDetectedColor;
 
+		/* Helper Function to move the crane to a specific position */
 		static SOState moveToPosition(const SOState& startFunc, const SOState& exitFunc, int pos){
 
 			App& app = App::get();
@@ -30,136 +31,148 @@ namespace AutoStates {
 			}
 
 			return SOState(startFunc);
-	   }
+		}
 
-	   SOState stateDropItem(){
+		SOState stateDropItem(){
 
-		  App& app = App::get();
-		  SOController& con = *app.getSOController();
+			App& app = App::get();
+			SOController& con = *app.getSOController();
 
-		  if(!bMoveToGarbage){
-			  itemCount++;
-		  }
+			if(!bMoveToGarbage){
+				itemCount++;
+			}
 
-		  setIsMoveToGarbage(false);
+			// Reset the garbage flag for the next cycle
+			setIsMoveToGarbage(false);
 
-		  con.run(buildState([](){ App::get().getCrane()->lowerArm();}, nullptr, 25));
-		  con.run(buildState([](){ App::get().getCrane()->disablePad();}, nullptr, 30));
-		  con.run(buildState([](){ App::get().getCrane()->raiseArm();}, SOState(stateMoveToLoader, 10), 30));
+			// Enqueue independent states in the state machine
+			con.run(buildState([](){ App::get().getCrane()->lowerArm();}, nullptr, 25));
+			con.run(buildState([](){ App::get().getCrane()->disablePad();}, nullptr, 30));
+			con.run(buildState([](){ App::get().getCrane()->raiseArm();}, SOState(stateMoveToLoader, 10), 30));
 
-		  return nullptr;
-	   }
+			return nullptr;
+		}
 
-	   SOState stateMoveToDropperGarbage(){
-		  static const int garbageDropperPosition = 18;
-		  return moveToPosition(stateMoveToDropperGarbage, stateDropItem, garbageDropperPosition);
-	   }
+		SOState stateMoveToDropperGarbage(){
+			static const int garbageDropperPosition = 18;
+			return moveToPosition(stateMoveToDropperGarbage, stateDropItem, garbageDropperPosition);
+		}
 
-	   SOState stateMoveToDropperLeft(){
-		  static const int leftDropperPosition = 10;
-		  return moveToPosition(stateMoveToDropperLeft, stateDropItem, leftDropperPosition);
-	   }
+		SOState stateMoveToDropperLeft(){
+			static const int leftDropperPosition = 10;
+			return moveToPosition(stateMoveToDropperLeft, stateDropItem, leftDropperPosition);
+		}
 
-	   SOState stateMoveToDropperMiddle(){
-		  static const int middleDropperPosition = 12;
-		  return moveToPosition(stateMoveToDropperMiddle, stateDropItem, middleDropperPosition);
-	   }
+		SOState stateMoveToDropperMiddle(){
+			static const int middleDropperPosition = 12;
+			return moveToPosition(stateMoveToDropperMiddle, stateDropItem, middleDropperPosition);
+		}
 
-	   SOState stateMoveToDropperRight(){
-		  static const int rightDropperPosition = 14;
-		  return moveToPosition(stateMoveToDropperRight, stateDropItem, rightDropperPosition);
-	   }
+		SOState stateMoveToDropperRight(){
+			static const int rightDropperPosition = 14;
+			return moveToPosition(stateMoveToDropperRight, stateDropItem, rightDropperPosition);
+		}
 
-	   SOState stateCheckColor(){
-		  App& app = App::get();
+		SOState stateCheckColor(){
+			App& app = App::get();
 
-		  static const int limitWhiteRed = 40000;
-		  static const int limitRedBlue = 50000;
+			static const int limitWhiteRed = 40000;
+			static const int limitRedBlue = 50000;
 
-		  if(app.getColorSensor()->getValue() < limitWhiteRed){
-			 lastDetectedColor = "White";
-			 return buildState([](){ App::get().getCrane()->raiseArm();}, SOState(stateMoveToDropperMiddle, 25));
-		  }
-		  else if(app.getColorSensor()->getValue() > limitWhiteRed && app.getColorSensor()->getValue() < limitRedBlue){
-			  lastDetectedColor = "Red";
-			  return buildState([](){ App::get().getCrane()->raiseArm();}, SOState(stateMoveToDropperLeft, 25));
-		  }
-		  else if(app.getColorSensor()->getValue() > limitRedBlue){
-			  lastDetectedColor = "Blue";
-			  return buildState([](){ App::get().getCrane()->raiseArm();}, SOState(stateMoveToDropperRight, 25));
-		  }
+			// Checks the colors and performs a transition to the corresponding stateb
+			if(app.getColorSensor()->getValue() < limitWhiteRed){
+				lastDetectedColor = "White";
+				return buildState([](){ App::get().getCrane()->raiseArm();}, SOState(stateMoveToDropperMiddle, 25));
+			}
+			else if(app.getColorSensor()->getValue() > limitWhiteRed && app.getColorSensor()->getValue() < limitRedBlue){
+				lastDetectedColor = "Red";
+				return buildState([](){ App::get().getCrane()->raiseArm();}, SOState(stateMoveToDropperLeft, 25));
+			}
+			else if(app.getColorSensor()->getValue() > limitRedBlue){
+				lastDetectedColor = "Blue";
+				return buildState([](){ App::get().getCrane()->raiseArm();}, SOState(stateMoveToDropperRight, 25));
+			}
 
-		  return SOState(stateCheckColor);
-	   }
+			// Should normally not reached
+			return SOState(stateCheckColor);
+		}
 
-	   SOState stateMoveToColorSensor(){
-		  static const int colorSensorPosition = 7;
+		SOState stateMoveToColorSensor(){
+			static const int colorSensorPosition = 7;
 
-		  return moveToPosition(
-				  stateMoveToColorSensor,
-				  bMoveToGarbage ? SOState(stateMoveToDropperGarbage) : buildState([](){App::get().getCrane()->lowerArm();}, SOState(stateCheckColor, 25), 25),
-				  colorSensorPosition);
-	   }
+			// Moves to the color sensor position or, if the garbage flag is true, to the garbage drop position
+			return moveToPosition(
+					stateMoveToColorSensor,
+					bMoveToGarbage ? SOState(stateMoveToDropperGarbage) : buildState([](){App::get().getCrane()->lowerArm();}, SOState(stateCheckColor, 25), 25),
+					colorSensorPosition);
+		}
 
-	   SOState stateCollectItem() {
-		  App& app = App::get();
-		  SOController& con = *app.getSOController();
+		SOState stateCollectItem() {
+			App& app = App::get();
+			SOController& con = *app.getSOController();
 
-		  con.run(buildState([](){ App::get().getCrane()->lowerArm();}, nullptr, 50));
-		  con.run(buildState([](){ App::get().getCrane()->enablePad();}, nullptr, 50));
-		  con.run(buildState([](){ App::get().getCrane()->raiseArm();}, SOState(stateMoveToColorSensor, 20), 50));
+			// Enqueue independent states in the state machine
+			con.run(buildState([](){ App::get().getCrane()->lowerArm();}, nullptr, 50));
+			con.run(buildState([](){ App::get().getCrane()->enablePad();}, nullptr, 50));
+			con.run(buildState([](){ App::get().getCrane()->raiseArm();}, SOState(stateMoveToColorSensor, 20), 50));
 
-		  return nullptr;
-	   }
+			// Exit state and get new start state
+			return nullptr;
+		}
 
-	   SOState stateCheckItemExists(){
-		  App& app = App::get();
-		  if(app.getLightBarrier()->getState()){
-			  app.getPressureController()->enable();
-			 return SOState(stateCollectItem);
-		  }
+		SOState stateCheckItemExists(){
+			App& app = App::get();
+			if(app.getLightBarrier()->getState()){
+				app.getPressureController()->enable();
+				return SOState(stateCollectItem);
+			}
 
-		  itemCount = 0;
+			itemCount = 0;
 
-		  app.getPressureController()->disable();
-		  return SOState(stateCheckItemExists);
-	   }
+			app.getPressureController()->disable();
 
-	   SOState stateMoveToLoader(){
+			// repeat current state
+			return SOState(stateCheckItemExists);
+		}
 
-		  App& app = App::get();
+		SOState stateMoveToLoader(){
 
-		  if(app.getCrane()->getEndswitch().getState()){
-			 app.getCrane()->halt();
-			 return SOState(stateCheckItemExists);
-		  }
-		  else if(app.getCrane()->getMotor().getDirection() != MotorDirection::LEFT_TURN){
-			 app.getCrane()->raiseArm();
-			 app.getCrane()->disablePad();
-			 app.getCrane()->turnLeft();
-		  }
+			App& app = App::get();
 
-		  return SOState(stateMoveToLoader);
-	   }
+			// Check if crane is at the loader end switch position
+			if(app.getCrane()->getEndswitch().getState()){
+				app.getCrane()->halt();
+				return SOState(stateCheckItemExists);
+			}
+			// If crane is not at the position, adjust direction and move 
+			else if(app.getCrane()->getMotor().getDirection() != MotorDirection::LEFT_TURN){
+				app.getCrane()->raiseArm();
+				app.getCrane()->disablePad();
+				app.getCrane()->turnLeft();
+			}
 
-	   int getItemCount(){
-		   return itemCount;
-	   }
+			// repeat current state
+			return SOState(stateMoveToLoader);
+		}
 
-	   void setItemCount(int count){
-		   itemCount = count;
-	   }
+		int getItemCount(){
+			return itemCount;
+		}
 
-	   const std::string& getLastDetectedColor(){
-		   return lastDetectedColor;
-	   }
+		void setItemCount(int count){
+			itemCount = count;
+		}
 
-	   bool getIsMoveToGarbage(){
-		   return bMoveToGarbage;
-	   }
+		const std::string& getLastDetectedColor(){
+			return lastDetectedColor;
+		}
 
-	   void setIsMoveToGarbage(bool bGarbage){
-		   bMoveToGarbage = bGarbage;
-	   }
+		bool getIsMoveToGarbage(){
+			return bMoveToGarbage;
+		}
+
+		void setIsMoveToGarbage(bool bGarbage){
+			bMoveToGarbage = bGarbage;
+		}
 	}
 }

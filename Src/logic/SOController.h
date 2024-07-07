@@ -7,6 +7,10 @@
 
 namespace so{
 
+    /* 
+    * Represents a function or method as a state and 
+    * defines other important functionalities for the functioning of the state machine  
+    */
     struct SOState{
 
         SOState() {}
@@ -63,18 +67,39 @@ namespace so{
         }
 
     private:
+        /* Wrapped function pointer */
         std::function<SOState()> m_func;
+
+        /* Start time */
         LWORD m_startTime;
+
+        /* Delay for calculating the execution time */
         DWORD m_delay;
     };
 
-    	template<typename F>
-    	static SOState buildState(F&& func, SOState&& exitState, DWORD delay = 0){
-    		return SOState([=]() mutable {
-			func();
-			return exitState;
-		}, delay);
+    /* 
+     * Helper function for quickly creating states 
+     * from general functions or methods that do not return SOStates 
+     */
+    template<typename F>
+    static SOState buildState(F&& func, SOState&& exitState, DWORD delay = 0){
+        return SOState(
+            [=]() mutable {
+                func();
+                return exitState;
+            }
+        , delay);
 	}
+
+    /*
+    * State machine which cycles through all the enqueued states using the update method. 
+    * The execution process of the state machine runs as follows: 
+    *
+    *    1. The top state (index 0) from the list (m_stateList) is taken and executed
+    *    2. The returned state is then placed back in the top position (index 0) in the list, ready for the next cycle
+    *    3. If the returned state is a nullptr or invalid, it is not inserted into the list and the next (Index 1)state moves up.
+    *    4 Next cycle: Step 1 is executed 
+    */
 
     class SOController {
     public:
@@ -85,10 +110,28 @@ namespace so{
 
     	}
 
+        /* 
+        * Inserts a new start state into the state machine
+        * The state is inserted at the end of the list 
+        */
         virtual void run(const SOState& startState);
+
+        /* Executes a cycle in the state machine*/
         virtual void update();
+
+        /*
+         * Pauses the execution of the state machine
+         */
         virtual void pause();
+
+        /*
+         * Resumes the excution of the state machine 
+         */
         virtual void resume();
+
+        /*
+         * Removes all states in the queue
+         */
         virtual void reset();
 
         bool isPaused() const;
